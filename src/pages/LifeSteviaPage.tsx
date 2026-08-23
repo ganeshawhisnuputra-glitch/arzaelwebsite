@@ -9,7 +9,7 @@ export const LifeSteviaPage: React.FC = () => {
   });
   const [introStage, setIntroStage] = useState<number>(0);
 
-  // Name editing state
+  // Single source of truth for custom name
   const [name, setName] = useState<string>('');
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [prevName, setPrevName] = useState<string>('');
@@ -53,7 +53,7 @@ export const LifeSteviaPage: React.FC = () => {
     setTimeout(() => {
       inputRef.current?.focus();
       inputRef.current?.select();
-    }, 50);
+    }, 30);
   };
 
   const handleFinishEdit = () => {
@@ -79,21 +79,21 @@ export const LifeSteviaPage: React.FC = () => {
     setTimeout(() => setToastMessage(null), 3500);
   };
 
-  // Formatted display text
-  const displayName = name.trim() ? name.trim().toUpperCase() : 'NAME';
-  const displayWithParentheses = `(${displayName})`;
+  // Formatted display values
+  const rawDisplayName = name.trim() ? name.trim().toUpperCase() : 'NAME';
+  const displayWithParentheses = `(${rawDisplayName})`;
 
-  // Calculate dynamic font scale percentage for long names
+  // Calculate dynamic font scale factor for long names to maintain safe area
   const getScaleFactor = (str: string) => {
     const len = str.length;
-    if (len <= 7) return 1;
-    if (len <= 12) return 0.85;
-    if (len <= 16) return 0.70;
-    if (len <= 20) return 0.58;
-    return 0.48;
+    if (len <= 6) return 1;
+    if (len <= 10) return 0.88;
+    if (len <= 14) return 0.74;
+    if (len <= 18) return 0.62;
+    return 0.50;
   };
 
-  const currentScale = getScaleFactor(displayName);
+  const currentScale = getScaleFactor(rawDisplayName);
 
   // Generate 1080x1920 high-resolution Canvas Blob
   const generatePosterBlob = useCallback((): Promise<Blob> => {
@@ -116,21 +116,21 @@ export const LifeSteviaPage: React.FC = () => {
         // 1. Draw base 1080x1920 poster
         ctx.drawImage(img, 0, 0, 1080, 1920);
 
-        // 2. Cover original (NAME) area with exact sampled background color #063F47
+        // 2. Cover original baked (NAME) region (Y: 1235..1395, X: 260..820) with exact poster background #063F47
         ctx.fillStyle = '#063F47';
-        ctx.fillRect(180, 1060, 720, 150);
+        ctx.fillRect(250, 1235, 580, 160);
 
-        // 3. Draw customized dynamic (NAME)
-        const baseFontSize = 91;
+        // 3. Draw customized dynamic (NAME) centered at (540, 1313)
+        const baseFontSize = 104;
         const fontSize = Math.round(baseFontSize * currentScale);
 
-        ctx.font = `900 ${fontSize}px "Inter", "Montserrat", system-ui, -apple-system, sans-serif`;
-        ctx.fillStyle = '#B85565';
+        ctx.font = `800 ${fontSize}px "Inter", "Montserrat", "Arial Rounded MT Bold", system-ui, -apple-system, sans-serif`;
+        ctx.fillStyle = '#B65364';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
-        // Precise vertical center at Y=1133
-        ctx.fillText(displayWithParentheses, 540, 1133);
+        // Draw exact customized name with parentheses
+        ctx.fillText(displayWithParentheses, 540, 1313);
 
         canvas.toBlob((blob) => {
           if (blob) {
@@ -153,7 +153,7 @@ export const LifeSteviaPage: React.FC = () => {
       setIsGenerating(true);
       const blob = await generatePosterBlob();
       const url = URL.createObjectURL(blob);
-      const filename = `running-out-of-${displayName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-arzael.png`;
+      const filename = `running-out-of-${rawDisplayName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-arzael.png`;
 
       const link = document.createElement('a');
       link.href = url;
@@ -177,7 +177,7 @@ export const LifeSteviaPage: React.FC = () => {
     try {
       setIsGenerating(true);
       const blob = await generatePosterBlob();
-      const filename = `running-out-of-${displayName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-arzael.png`;
+      const filename = `running-out-of-${rawDisplayName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-arzael.png`;
       const file = new File([blob], filename, { type: 'image/png' });
       const shareText = "I’m running out of my Life Stevia.";
 
@@ -270,7 +270,7 @@ export const LifeSteviaPage: React.FC = () => {
 
         {/* Main 2-Column Responsive Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-          {/* Left Column: Interactive 9:16 Poster Canvas */}
+          {/* Left Column: Interactive 9:16 Poster with Direct In-Place Name Editing */}
           <div className="lg:col-span-6 flex flex-col items-center justify-center">
             <div
               ref={posterContainerRef}
@@ -283,51 +283,51 @@ export const LifeSteviaPage: React.FC = () => {
                 className="w-full h-full object-contain pointer-events-none"
               />
 
-              {/* Dynamic (NAME) Patch & Editable Hotspot */}
+              {/* Exact Direct (NAME) Replacement Mask & Inline Editing Hotspot */}
               <div
                 style={{
-                  top: '56.6%',
-                  left: '16%',
-                  width: '68%',
-                  height: '7.8%',
+                  top: '64.32%',
+                  left: '20%',
+                  width: '60%',
+                  height: '8.33%',
                 }}
                 onClick={handleStartEdit}
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && handleStartEdit()}
                 aria-label="Directly edit person's name on poster"
-                className="absolute flex items-center justify-center bg-[#063F47] cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-flesh-400 group/hotspot rounded-sm"
+                className="absolute flex items-center justify-center bg-[#063F47] cursor-pointer transition-all focus:outline-none focus:ring-1 focus:ring-flesh-400/50 group/hotspot"
               >
                 {!isEditing ? (
                   <div className="relative w-full h-full flex items-center justify-center">
-                    {/* Live styled name text */}
+                    {/* Live styled name replacing baked (NAME) */}
                     <span
                       style={{
-                        color: '#B85565',
-                        fontSize: `calc(clamp(14px, 4.2vw, 24px) * ${currentScale})`,
-                        fontWeight: 900,
-                        letterSpacing: '0.02em',
+                        color: '#B65364',
+                        fontSize: `calc(clamp(16px, 4.8vw, 26px) * ${currentScale})`,
+                        fontWeight: 800,
+                        letterSpacing: '0.01em',
                       }}
-                      className="font-sans text-center truncate leading-none transition-all"
+                      className="font-sans text-center truncate leading-none transition-all select-none"
                     >
                       {displayWithParentheses}
                     </span>
 
-                    {/* Subtle interactive hover cue (not included in download) */}
-                    <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 opacity-0 group-hover/hotspot:opacity-100 transition-opacity bg-petrol-900/90 border border-flesh-500/40 text-[9px] font-mono text-flesh-300 px-1.5 py-0.5 whitespace-nowrap pointer-events-none uppercase tracking-wider">
-                      TAP TO EDIT NAME
+                    {/* Subtle transient hover hint (only on mouse hover, never in export) */}
+                    <span className="absolute -bottom-5 left-1/2 -translate-x-1/2 opacity-0 group-hover/hotspot:opacity-90 transition-opacity bg-petrol-950/90 border border-flesh-500/30 text-[9px] font-mono text-flesh-300 px-1.5 py-0.5 whitespace-nowrap pointer-events-none uppercase tracking-wider">
+                      CLICK TO EDIT
                     </span>
                   </div>
                 ) : (
-                  /* Active inline text input */
-                  <div className="w-full h-full flex items-center justify-center px-1">
+                  /* Active direct inline editor replacing text in-place without forms or borders */
+                  <div className="w-full h-full flex items-center justify-center">
                     <span
                       style={{
-                        color: '#B85565',
-                        fontSize: `calc(clamp(14px, 4.2vw, 24px) * ${currentScale})`,
-                        fontWeight: 900,
+                        color: '#B65364',
+                        fontSize: `calc(clamp(16px, 4.8vw, 26px) * ${currentScale})`,
+                        fontWeight: 800,
                       }}
-                      className="font-sans leading-none mr-0.5"
+                      className="font-sans leading-none"
                     >
                       (
                     </span>
@@ -341,19 +341,19 @@ export const LifeSteviaPage: React.FC = () => {
                       onKeyDown={handleKeyDown}
                       placeholder="NAME"
                       style={{
-                        color: '#B85565',
-                        fontSize: `calc(clamp(14px, 4.2vw, 24px) * ${currentScale})`,
-                        fontWeight: 900,
+                        color: '#B65364',
+                        fontSize: `calc(clamp(16px, 4.8vw, 26px) * ${currentScale})`,
+                        fontWeight: 800,
                       }}
-                      className="w-full bg-transparent text-center uppercase focus:outline-none border-b border-flesh-400/80 font-sans tracking-wide p-0 m-0"
+                      className="bg-transparent text-center uppercase focus:outline-none border-none font-sans p-0 m-0 w-auto min-w-[20px] max-w-[85%]"
                     />
                     <span
                       style={{
-                        color: '#B85565',
-                        fontSize: `calc(clamp(14px, 4.2vw, 24px) * ${currentScale})`,
-                        fontWeight: 900,
+                        color: '#B65364',
+                        fontSize: `calc(clamp(16px, 4.8vw, 26px) * ${currentScale})`,
+                        fontWeight: 800,
                       }}
-                      className="font-sans leading-none ml-0.5"
+                      className="font-sans leading-none"
                     >
                       )
                     </span>
@@ -362,14 +362,14 @@ export const LifeSteviaPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Tap instruction hint on mobile */}
+            {/* Mobile tap cue */}
             <p className="text-[11px] font-mono text-text-dim mt-3 flex items-center gap-1.5 lg:hidden">
               <Sparkles className="w-3.5 h-3.5 text-flesh-400" />
-              <span>Tap the name on the poster to customize</span>
+              <span>Tap (NAME) directly on the poster to customize</span>
             </p>
           </div>
 
-          {/* Right Column: Exact Supporting Copy & Action Controls */}
+          {/* Right Column: Exact Supporting Copy & Action Controls (No external form) */}
           <div className="lg:col-span-6 flex flex-col justify-center space-y-8">
             <div>
               <span className="text-xs text-flesh-400 tracking-widest uppercase bg-flesh-950/80 px-2.5 py-1 border border-flesh-800/40 font-mono inline-block mb-3">
@@ -388,24 +388,6 @@ export const LifeSteviaPage: React.FC = () => {
               <p className="italic text-text-muted">
                 Type their name before you run out of them.
               </p>
-            </div>
-
-            {/* Current Person Badge & Quick Edit Button */}
-            <div className="p-4 bg-petrol-900/60 border border-petrol-800 flex items-center justify-between gap-4">
-              <div>
-                <span className="font-mono text-[10px] text-text-dim uppercase tracking-wider block">
-                  DEDICATED TO:
-                </span>
-                <span className="font-serif text-lg text-flesh-300 font-medium">
-                  {displayName}
-                </span>
-              </div>
-              <button
-                onClick={handleStartEdit}
-                className="px-3.5 py-1.5 bg-petrol-800 border border-petrol-600 hover:border-flesh-400 text-xs font-mono uppercase tracking-wider text-text-primary transition-colors"
-              >
-                EDIT NAME
-              </button>
             </div>
 
             {/* Action Controls */}
