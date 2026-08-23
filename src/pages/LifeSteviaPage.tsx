@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Download, Share2, ArrowLeft, Check, Sparkles } from 'lucide-react';
 
@@ -9,12 +9,13 @@ export const LifeSteviaPage: React.FC = () => {
   });
   const [introStage, setIntroStage] = useState<number>(0);
 
-  // Single source of truth for custom name
+  // Single canonical name state
   const [name, setName] = useState<string>('');
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [prevName, setPrevName] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [posterWidth, setPosterWidth] = useState<number>(420);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const posterContainerRef = useRef<HTMLDivElement>(null);
@@ -46,13 +47,69 @@ export const LifeSteviaPage: React.FC = () => {
     };
   }, [showIntro]);
 
+  // Track responsive poster width for 1:1 preview font scaling
+  useEffect(() => {
+    const updateWidth = () => {
+      if (posterContainerRef.current) {
+        setPosterWidth(posterContainerRef.current.clientWidth);
+      }
+    };
+    updateWidth();
+
+    const observer = new ResizeObserver(updateWidth);
+    if (posterContainerRef.current) {
+      observer.observe(posterContainerRef.current);
+    }
+    window.addEventListener('resize', updateWidth);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', updateWidth);
+    };
+  }, []);
+
+  // Shared canonical name normalization (strictly no parentheses)
+  const normalizedName = useMemo(() => {
+    const cleaned = name.replace(/[()]/g, '').trim().toUpperCase();
+    return cleaned || 'NAME';
+  }, [name]);
+
+  // Measure text width using Knewave font and compute canonical export font size
+  const computeExportFontSize = useCallback((text: string): number => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return 150;
+
+    ctx.font = '400 150px "Knewave", cursive';
+    const metrics = ctx.measureText(text);
+    const measuredWidth = metrics.width;
+
+    const maxSafeWidth = 760;
+    if (measuredWidth <= maxSafeWidth) {
+      return 150;
+    }
+
+    const scaled = Math.floor(150 * (maxSafeWidth / measuredWidth));
+    return Math.max(90, scaled);
+  }, []);
+
+  const exportFontSize = useMemo(() => {
+    return computeExportFontSize(normalizedName);
+  }, [computeExportFontSize, normalizedName]);
+
+  // Calculate matching responsive preview font size
+  const previewScale = posterWidth / 1080;
+  const previewFontSize = Math.round(exportFontSize * previewScale);
+
   // Direct Inline Editing handlers
   const handleStartEdit = () => {
     setPrevName(name);
     setIsEditing(true);
     setTimeout(() => {
-      inputRef.current?.focus();
-      inputRef.current?.select();
+      if (inputRef.current) {
+        inputRef.current.focus();
+        inputRef.current.select();
+      }
     }, 30);
   };
 
@@ -79,24 +136,16 @@ export const LifeSteviaPage: React.FC = () => {
     setTimeout(() => setToastMessage(null), 3500);
   };
 
-  // Formatted display values
-  const rawDisplayName = name.trim() ? name.trim().toUpperCase() : 'NAME';
-  const displayWithParentheses = `(${rawDisplayName})`;
-
-  // Calculate dynamic font scale factor for long names to maintain safe area
-  const getScaleFactor = (str: string) => {
-    const len = str.length;
-    if (len <= 6) return 1;
-    if (len <= 10) return 0.88;
-    if (len <= 14) return 0.74;
-    if (len <= 18) return 0.62;
-    return 0.50;
-  };
-
-  const currentScale = getScaleFactor(rawDisplayName);
-
   // Generate 1080x1920 high-resolution Canvas Blob
-  const generatePosterBlob = useCallback((): Promise<Blob> => {
+  const generatePosterBlob = useCallback(async (): Promise<Blob> => {
+    // 1. Ensure Knewave font is fully ready before drawing
+    try {
+      await document.fonts.load('400 150px "Knewave"');
+      await document.fonts.ready;
+    } catch {
+      // Proceed gracefully
+    }
+
     return new Promise((resolve, reject) => {
       const canvas = document.createElement('canvas');
       canvas.width = 1080;
@@ -116,21 +165,21 @@ export const LifeSteviaPage: React.FC = () => {
         // 1. Draw base 1080x1920 poster
         ctx.drawImage(img, 0, 0, 1080, 1920);
 
-        // 2. Cover original baked (NAME) region (Y: 1235..1395, X: 260..820) with exact poster background #063F47
+        // 2. Cover original baked (NAME) region (Y: 1235..1395, X: 250..830) with exact solid background #063F47
         ctx.fillStyle = '#063F47';
         ctx.fillRect(250, 1235, 580, 160);
 
-        // 3. Draw customized dynamic (NAME) centered at (540, 1313)
-        const baseFontSize = 104;
-        const fontSize = Math.round(baseFontSize * currentScale);
+        // 3. Compute auto-fit font size
+        const fontSize = computeExportFontSize(normalizedName);
 
-        ctx.font = `800 ${fontSize}px "Inter", "Montserrat", "Arial Rounded MT Bold", system-ui, -apple-system, sans-serif`;
+        // 4. Draw customized dynamic name in Knewave with exact specifications
+        ctx.font = `400 ${fontSize}px "Knewave", cursive`;
         ctx.fillStyle = '#B65364';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
-        // Draw exact customized name with parentheses
-        ctx.fillText(displayWithParentheses, 540, 1313);
+        // Draw centered at (540, 1315)
+        ctx.fillText(normalizedName, 540, 1315);
 
         canvas.toBlob((blob) => {
           if (blob) {
@@ -145,7 +194,7 @@ export const LifeSteviaPage: React.FC = () => {
         reject(new Error('Failed to load poster template'));
       };
     });
-  }, [currentScale, displayWithParentheses]);
+  }, [computeExportFontSize, normalizedName]);
 
   // Download Handler
   const handleDownload = async () => {
@@ -153,7 +202,7 @@ export const LifeSteviaPage: React.FC = () => {
       setIsGenerating(true);
       const blob = await generatePosterBlob();
       const url = URL.createObjectURL(blob);
-      const filename = `running-out-of-${rawDisplayName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-arzael.png`;
+      const filename = `running-out-of-${normalizedName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-arzael.png`;
 
       const link = document.createElement('a');
       link.href = url;
@@ -177,7 +226,7 @@ export const LifeSteviaPage: React.FC = () => {
     try {
       setIsGenerating(true);
       const blob = await generatePosterBlob();
-      const filename = `running-out-of-${rawDisplayName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-arzael.png`;
+      const filename = `running-out-of-${normalizedName.toLowerCase().replace(/[^a-z0-9]/g, '-')}-arzael.png`;
       const file = new File([blob], filename, { type: 'image/png' });
       const shareText = "I’m running out of my Life Stevia.";
 
@@ -287,8 +336,8 @@ export const LifeSteviaPage: React.FC = () => {
               <div
                 style={{
                   top: '64.32%',
-                  left: '20%',
-                  width: '60%',
+                  left: '15%',
+                  width: '70%',
                   height: '8.33%',
                 }}
                 onClick={handleStartEdit}
@@ -296,21 +345,22 @@ export const LifeSteviaPage: React.FC = () => {
                 tabIndex={0}
                 onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && handleStartEdit()}
                 aria-label="Directly edit person's name on poster"
-                className="absolute flex items-center justify-center bg-[#063F47] cursor-pointer transition-all focus:outline-none focus:ring-1 focus:ring-flesh-400/50 group/hotspot"
+                className="absolute flex items-center justify-center bg-[#063F47] cursor-pointer transition-all focus:outline-none focus:ring-1 focus:ring-flesh-400/40 group/hotspot"
               >
                 {!isEditing ? (
                   <div className="relative w-full h-full flex items-center justify-center">
-                    {/* Live styled name replacing baked (NAME) */}
+                    {/* Live styled name using Knewave font without parentheses */}
                     <span
                       style={{
+                        fontFamily: '"Knewave", cursive',
+                        fontWeight: 400,
                         color: '#B65364',
-                        fontSize: `calc(clamp(16px, 4.8vw, 26px) * ${currentScale})`,
-                        fontWeight: 800,
-                        letterSpacing: '0.01em',
+                        fontSize: `${previewFontSize}px`,
+                        lineHeight: 0.9,
                       }}
-                      className="font-sans text-center truncate leading-none transition-all select-none"
+                      className="text-center truncate leading-none transition-all select-none tracking-normal"
                     >
-                      {displayWithParentheses}
+                      {normalizedName}
                     </span>
 
                     {/* Subtle transient hover hint (only on mouse hover, never in export) */}
@@ -321,42 +371,24 @@ export const LifeSteviaPage: React.FC = () => {
                 ) : (
                   /* Active direct inline editor replacing text in-place without forms or borders */
                   <div className="w-full h-full flex items-center justify-center">
-                    <span
-                      style={{
-                        color: '#B65364',
-                        fontSize: `calc(clamp(16px, 4.8vw, 26px) * ${currentScale})`,
-                        fontWeight: 800,
-                      }}
-                      className="font-sans leading-none"
-                    >
-                      (
-                    </span>
                     <input
                       ref={inputRef}
                       type="text"
                       maxLength={24}
                       value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      onChange={(e) => setName(e.target.value.replace(/[()]/g, ''))}
                       onBlur={handleFinishEdit}
                       onKeyDown={handleKeyDown}
                       placeholder="NAME"
                       style={{
+                        fontFamily: '"Knewave", cursive',
+                        fontWeight: 400,
                         color: '#B65364',
-                        fontSize: `calc(clamp(16px, 4.8vw, 26px) * ${currentScale})`,
-                        fontWeight: 800,
+                        fontSize: `${previewFontSize}px`,
+                        lineHeight: 0.9,
                       }}
-                      className="bg-transparent text-center uppercase focus:outline-none border-none font-sans p-0 m-0 w-auto min-w-[20px] max-w-[85%]"
+                      className="bg-transparent text-center uppercase focus:outline-none border-none p-0 m-0 w-full tracking-normal placeholder:text-[#B65364]/60"
                     />
-                    <span
-                      style={{
-                        color: '#B65364',
-                        fontSize: `calc(clamp(16px, 4.8vw, 26px) * ${currentScale})`,
-                        fontWeight: 800,
-                      }}
-                      className="font-sans leading-none"
-                    >
-                      )
-                    </span>
                   </div>
                 )}
               </div>
@@ -365,7 +397,7 @@ export const LifeSteviaPage: React.FC = () => {
             {/* Mobile tap cue */}
             <p className="text-[11px] font-mono text-text-dim mt-3 flex items-center gap-1.5 lg:hidden">
               <Sparkles className="w-3.5 h-3.5 text-flesh-400" />
-              <span>Tap (NAME) directly on the poster to customize</span>
+              <span>Tap NAME directly on the poster to customize</span>
             </p>
           </div>
 
