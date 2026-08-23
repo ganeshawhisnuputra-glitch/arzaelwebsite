@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { SELF_SABOTAGE_ERA, SELF_SABOTAGE_TRACKS } from '../data/selfSabotageEra';
 import { MediaPlaceholder } from '../components/common/MediaPlaceholder';
 import { useAudio } from '../context/AudioContext';
-import { Play, Sparkles, ArrowRight } from 'lucide-react';
+import { Play, Sparkles, ArrowRight, UserCheck } from 'lucide-react';
 
 export const SelfSabotagePage: React.FC = () => {
   const { playTrack } = useAudio();
@@ -86,31 +86,60 @@ export const SelfSabotagePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Interactive Life Stevia Gateway Card */}
-      <section className="p-8 sm:p-10 bg-petrol-900/40 border border-flesh-500/40 petrol-glow flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div className="max-w-xl">
-          <div className="flex items-center gap-2 mb-2">
-            <Sparkles className="w-4 h-4 text-flesh-400" />
-            <span className="text-xs text-flesh-400 uppercase tracking-widest font-mono">
-              INTERACTIVE ARTIFACT
-            </span>
+      {/* Interactive Era Artifacts Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Profile Picture Generator Gateway Card */}
+        <section className="p-8 bg-petrol-900/40 border border-flesh-500/40 petrol-glow flex flex-col justify-between gap-6">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <UserCheck className="w-4 h-4 text-flesh-400" />
+              <span className="text-xs text-flesh-400 uppercase tracking-widest font-mono">
+                PROFILE IDENTITY
+              </span>
+            </div>
+            <h3 className="font-serif text-2xl sm:text-3xl text-text-primary mb-2 font-normal">
+              SELF SABOTAGE AVATAR
+            </h3>
+            <p className="text-sm text-text-muted leading-relaxed">
+              We all have one. Yours just gets a profile picture. Frame your face in the ouroboros.
+            </p>
           </div>
-          <h3 className="font-serif text-2xl sm:text-3xl text-text-primary mb-2 font-normal">
-            LIFE STEVIA
-          </h3>
-          <p className="text-sm text-text-muted leading-relaxed">
-            The person who keeps loving you anyway. Type their name before you run out of them.
-          </p>
-        </div>
 
-        <Link
-          to="/self-sabotage/life-stevia"
-          className="px-8 py-4 bg-flesh-900/80 border border-flesh-500 text-xs sm:text-sm font-mono tracking-widest uppercase text-flesh-200 hover:bg-flesh-800 hover:text-white transition-all flesh-glow shrink-0 flex items-center gap-2.5 font-medium"
-        >
-          <span>MAKE YOUR LIFE STEVIA POSTER</span>
-          <ArrowRight className="w-4 h-4" />
-        </Link>
-      </section>
+          <Link
+            to="/self-sabotage/profile-picture"
+            className="px-6 py-3.5 bg-flesh-900/80 border border-flesh-500 text-xs sm:text-sm font-mono tracking-widest uppercase text-flesh-200 hover:bg-flesh-800 hover:text-white transition-all flesh-glow self-start flex items-center gap-2 font-medium"
+          >
+            <span>PICK YOUR PROBLEM</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </section>
+
+        {/* Life Stevia Gateway Card */}
+        <section className="p-8 bg-petrol-900/40 border border-petrol-700 hover:border-petrol-500 transition-colors flex flex-col justify-between gap-6">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="w-4 h-4 text-petrol-400" />
+              <span className="text-xs text-petrol-400 uppercase tracking-widest font-mono">
+                POSTER ARTIFACT
+              </span>
+            </div>
+            <h3 className="font-serif text-2xl sm:text-3xl text-text-primary mb-2 font-normal">
+              LIFE STEVIA
+            </h3>
+            <p className="text-sm text-text-muted leading-relaxed">
+              The person who keeps loving you anyway. Type their name before you run out of them.
+            </p>
+          </div>
+
+          <Link
+            to="/self-sabotage/life-stevia"
+            className="px-6 py-3.5 bg-petrol-900 border border-petrol-600 text-xs sm:text-sm font-mono tracking-widest uppercase text-petrol-200 hover:bg-petrol-800 hover:text-white transition-all self-start flex items-center gap-2 font-medium"
+          >
+            <span>MAKE YOUR LIFE STEVIA POSTER</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </section>
+      </div>
     </div>
   );
 };
