@@ -1,8 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { SELF_SABOTAGE_ERA, SELF_SABOTAGE_TRACKS } from '../data/selfSabotageEra';
 import { MediaPlaceholder } from '../components/common/MediaPlaceholder';
 import { useAudio } from '../context/AudioContext';
-import { Play } from 'lucide-react';
+import { Play, Sparkles, ArrowRight } from 'lucide-react';
 
 export const SelfSabotagePage: React.FC = () => {
   const { playTrack } = useAudio();
@@ -34,7 +35,7 @@ export const SelfSabotagePage: React.FC = () => {
       </div>
 
       {/* Main Content Grid: Artwork & Tracklist */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mb-20">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mb-16">
         {/* Left Column: Album Art Frame */}
         <div className="lg:col-span-5 space-y-4">
           <MediaPlaceholder id="PLACEHOLDER_ALBUM_ART" title="SELF SABOTAGE" />
@@ -84,6 +85,32 @@ export const SelfSabotagePage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Interactive Life Stevia Gateway Card */}
+      <section className="p-8 sm:p-10 bg-petrol-900/40 border border-flesh-500/40 petrol-glow flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="max-w-xl">
+          <div className="flex items-center gap-2 mb-2">
+            <Sparkles className="w-4 h-4 text-flesh-400" />
+            <span className="text-xs text-flesh-400 uppercase tracking-widest font-mono">
+              INTERACTIVE ARTIFACT
+            </span>
+          </div>
+          <h3 className="font-serif text-2xl sm:text-3xl text-text-primary mb-2 font-normal">
+            LIFE STEVIA
+          </h3>
+          <p className="text-sm text-text-muted leading-relaxed">
+            The person who keeps loving you anyway. Type their name before you run out of them.
+          </p>
+        </div>
+
+        <Link
+          to="/self-sabotage/life-stevia"
+          className="px-8 py-4 bg-flesh-900/80 border border-flesh-500 text-xs sm:text-sm font-mono tracking-widest uppercase text-flesh-200 hover:bg-flesh-800 hover:text-white transition-all flesh-glow shrink-0 flex items-center gap-2.5 font-medium"
+        >
+          <span>MAKE YOUR LIFE STEVIA POSTER</span>
+          <ArrowRight className="w-4 h-4" />
+        </Link>
+      </section>
     </div>
   );
 };

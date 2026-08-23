@@ -8,6 +8,7 @@ import { Layout } from './components/layout/Layout';
 
 import { HomePage } from './pages/HomePage';
 import { SelfSabotagePage } from './pages/SelfSabotagePage';
+import { LifeSteviaPage } from './pages/LifeSteviaPage';
 import { ArchivePage } from './pages/ArchivePage';
 import { WatchPage } from './pages/WatchPage';
 import { ShopPage } from './pages/ShopPage';
@@ -26,6 +27,7 @@ export const App: React.FC = () => {
                 <Route path="/" element={<Layout />}>
                   <Route index element={<HomePage />} />
                   <Route path="self-sabotage" element={<SelfSabotagePage />} />
+                  <Route path="self-sabotage/life-stevia" element={<LifeSteviaPage />} />
                   <Route path="archive" element={<ArchivePage />} />
                   <Route path="watch" element={<WatchPage />} />
                   <Route path="shop" element={<ShopPage />} />
