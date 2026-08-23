@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-petrol-base: #030c0e;
+    --color-petrol-surface: #06171b;
+    --color-petrol-elevated: #0a2228;
+    --color-petrol-border: rgba(20, 114, 135, 0.2);
+    --color-petrol-accent: #147287;
+    --color-petrol-glow: #1fb4d4;
+    
+    --color-flesh-base: #d97e78;
+    --color-flesh-highlight: #f09f9a;
+    --color-flesh-glow: rgba(217, 126, 120, 0.15);
+
+    --color-text-primary: #e8ecec;
+    --color-text-muted: #809498;
+    --color-text-dim: #48595d;
+  }
+
+  body {
+    background-color: var(--color-petrol-base);
+    color: var(--color-text-primary);
+    overflow-x: hidden;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Custom scrollbar for deep atmospheric feel */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #020708;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #0c282f;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #147287;
+  }
+}
+
+@layer utilities {
+  .text-shadow-subtle {
+    text-shadow: 0 0 20px rgba(31, 180, 212, 0.3);
+  }
+  .flesh-glow {
+    box-shadow: 0 0 25px rgba(217, 126, 120, 0.12);
+  }
+  .petrol-glow {
+    box-shadow: 0 0 30px rgba(20, 114, 135, 0.18);
+  }
+}
+
+/* Reduced motion compliance */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
