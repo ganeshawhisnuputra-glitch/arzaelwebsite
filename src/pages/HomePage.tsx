@@ -8,6 +8,7 @@ import { MediaPlaceholder } from '../components/common/MediaPlaceholder';
 import { OuroborosMotif } from '../components/common/OuroborosMotif';
 import { OuroborosTransition } from '../components/common/OuroborosTransition';
 import { QuizPreviewCard } from '../components/quiz/QuizPreviewCard';
+import { CommunitySection } from '../components/community/CommunitySection';
 import { Play, ArrowRight, Mail, Sparkles } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
@@ -95,7 +96,7 @@ export const HomePage: React.FC = () => {
         </section>
       ) : (
         /* ========================================================================= */
-        /* 2. REVEALED WORLD (Self Sabotage, Music, Quiz, Letters) */
+        /* 2. REVEALED WORLD (Self Sabotage, Music, Quiz, Letters, Community) */
         /* ========================================================================= */
         <div ref={eraRevealRef} className="w-full animate-fade-in">
           {/* Era Hero Section */}
@@ -268,7 +269,7 @@ export const HomePage: React.FC = () => {
           {/* ========================================================================= */}
           <section
             aria-label="Letters from ARZAEL Teaser"
-            className="max-w-4xl mx-auto px-4 sm:px-6 py-20 md:py-24 text-center"
+            className="max-w-4xl mx-auto px-4 sm:px-6 py-20 md:py-24 text-center border-b border-petrol-800/60"
           >
             <h2 className="font-serif text-3xl sm:text-5xl text-text-primary tracking-editorial font-normal mb-6">
               CAN I WRITE TO YOU?
@@ -291,6 +292,16 @@ export const HomePage: React.FC = () => {
               <Mail className="w-4 h-4" />
               <span>LET ME WRITE TO YOU</span>
             </button>
+          </section>
+
+          {/* ========================================================================= */}
+          {/* 6. COMMUNITY CHANNELS — MEME PACK & HOUSE OF ZAELION */}
+          {/* ========================================================================= */}
+          <section
+            aria-label="Community Channels"
+            className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20"
+          >
+            <CommunitySection />
           </section>
         </div>
       )}

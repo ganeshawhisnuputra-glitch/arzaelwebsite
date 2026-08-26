@@ -19,7 +19,13 @@ export type AnalyticsEventType =
   | 'product_viewed'
   | 'add_to_cart'
   | 'checkout_started'
-  | 'archive_era_entered';
+  | 'archive_era_entered'
+  | 'profile_generator_opened'
+  | 'profile_photo_uploaded'
+  | 'profile_png_saved'
+  | 'arzael_meme_pack_clicked'
+  | 'house_of_zaelion_whatsapp_clicked'
+  | 'house_of_zaelion_instagram_clicked';
 
 export interface AnalyticsPayload {
   event: AnalyticsEventType;
