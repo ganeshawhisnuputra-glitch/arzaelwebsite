@@ -1,7 +1,23 @@
 import React from 'react';
 import { MEME_PACK_DESTINATION, HOUSE_OF_ZAELION_DESTINATIONS } from '../../data/communityData';
 import { AnalyticsEventType } from '../../types/analytics';
-import { ExternalLink, Sparkles, MessageCircle, Instagram } from 'lucide-react';
+import { ExternalLink, Sparkles, MessageCircle } from 'lucide-react';
+
+const InstagramIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+  </svg>
+);
 
 interface CommunitySectionProps {
   onAnalyticsEvent?: (event: AnalyticsEventType) => void;
@@ -128,7 +144,7 @@ export const CommunitySection: React.FC<CommunitySectionProps> = ({
             <div className="p-5 bg-petrol-950/80 border border-petrol-800 hover:border-petrol-600 transition-colors flex flex-col justify-between space-y-4">
               <div className="space-y-2">
                 <div className="flex items-center gap-1.5 text-flesh-400 text-[10px] font-mono tracking-widest uppercase">
-                  <Instagram className="w-3.5 h-3.5" />
+                  <InstagramIcon className="w-3.5 h-3.5" />
                   <span>{HOUSE_OF_ZAELION_DESTINATIONS.instagram.label}</span>
                 </div>
 
