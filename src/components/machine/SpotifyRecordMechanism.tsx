@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { socialLinks } from '../../data/socialLinks';
-import { ExternalLink, Disc, RotateCw, Activity } from 'lucide-react';
+import { ExternalLink, Activity } from 'lucide-react';
 
 interface SpotifyRecordMechanismProps {
   isActivated: boolean;

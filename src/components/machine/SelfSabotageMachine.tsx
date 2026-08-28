@@ -4,7 +4,7 @@ import { InstagramMirrorMechanism } from './InstagramMirrorMechanism';
 import { SpotifyRecordMechanism } from './SpotifyRecordMechanism';
 import { MachineSnake } from './MachineSnake';
 import { AnalyticsEventType } from '../../types/analytics';
-import { AlertTriangle, Sparkles, Gauge, Zap, RotateCcw, CheckCircle2 } from 'lucide-react';
+import { AlertTriangle, Zap } from 'lucide-react';
 
 interface SelfSabotageMachineProps {
   onAnalyticsEvent?: (event: AnalyticsEventType, properties?: Record<string, string | number | boolean | undefined>) => void;
@@ -40,7 +40,6 @@ export const SelfSabotageMachine: React.FC<SelfSabotageMachineProps> = ({
   const [overloadStage, setOverloadStage] = useState<number>(0); // 0 = idle, 1 = freeze/congrats, 2 = fixed nothing, 3 = do it again, 4 = restored
   const [doNotPressClicks, setDoNotPressClicks] = useState<number>(0);
   const [activeExcuseIndex, setActiveExcuseIndex] = useState<number>(0);
-  const [isNearViewport, setIsNearViewport] = useState<boolean>(false);
   const [hasEnteredView, setHasEnteredView] = useState<boolean>(false);
 
   const sectionRef = useRef<HTMLElement>(null);
@@ -59,13 +58,10 @@ export const SelfSabotageMachine: React.FC<SelfSabotageMachineProps> = ({
       (entries) => {
         const [entry] = entries;
         if (entry.isIntersecting) {
-          setIsNearViewport(true);
           if (!hasEnteredView) {
             setHasEnteredView(true);
             onAnalyticsEvent?.('self_sabotage_machine_viewed');
           }
-        } else {
-          setIsNearViewport(false);
         }
       },
       { threshold: 0.25 }

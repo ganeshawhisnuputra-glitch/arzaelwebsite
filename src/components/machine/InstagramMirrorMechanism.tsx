@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { socialLinks } from '../../data/socialLinks';
-import { ExternalLink, Eye, Sparkles } from 'lucide-react';
+import { ExternalLink, Eye } from 'lucide-react';
 
 interface InstagramMirrorMechanismProps {
   isActivated: boolean;
@@ -13,12 +13,10 @@ interface InstagramMirrorMechanismProps {
 export const InstagramMirrorMechanism: React.FC<InstagramMirrorMechanismProps> = ({
   isActivated,
   onActivate,
-  isOverloaded = false,
   prefersReducedMotion = false,
   className = '',
 }) => {
   const [isWiped, setIsWiped] = useState<boolean>(isActivated);
-  const [wipePercent, setWipePercent] = useState<number>(isActivated ? 100 : 0);
   const [eyePosition, setEyePosition] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [isHovering, setIsHovering] = useState<boolean>(false);
 
@@ -79,7 +77,6 @@ export const InstagramMirrorMechanism: React.FC<InstagramMirrorMechanismProps> =
 
     totalPixelsWipedRef.current += 1;
     const progress = Math.min(Math.round((totalPixelsWipedRef.current / 35) * 100), 100);
-    setWipePercent(progress);
 
     if (progress >= 35 && !isWiped) {
       setIsWiped(true);
@@ -123,7 +120,6 @@ export const InstagramMirrorMechanism: React.FC<InstagramMirrorMechanismProps> =
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     setIsWiped(true);
-    setWipePercent(100);
     onActivate();
   };
 

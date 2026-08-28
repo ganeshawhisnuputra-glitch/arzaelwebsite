@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { socialLinks } from '../../data/socialLinks';
-import { ExternalLink, Flame, Sparkles } from 'lucide-react';
+import { ExternalLink, Flame } from 'lucide-react';
 
 interface TikTokScrollMechanismProps {
   isActivated: boolean;
