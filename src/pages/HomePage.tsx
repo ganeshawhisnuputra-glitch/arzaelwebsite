@@ -8,6 +8,7 @@ import { MediaPlaceholder } from '../components/common/MediaPlaceholder';
 import { OuroborosMotif } from '../components/common/OuroborosMotif';
 import { OuroborosTransition } from '../components/common/OuroborosTransition';
 import { QuizPreviewCard } from '../components/quiz/QuizPreviewCard';
+import { SelfSabotageMachine } from '../components/machine/SelfSabotageMachine';
 import { CommunitySection } from '../components/community/CommunitySection';
 import { Play, ArrowRight, Mail, Sparkles } from 'lucide-react';
 
@@ -96,7 +97,7 @@ export const HomePage: React.FC = () => {
         </section>
       ) : (
         /* ========================================================================= */
-        /* 2. REVEALED WORLD (Self Sabotage, Music, Quiz, Letters, Community) */
+        /* 2. REVEALED WORLD (Self Sabotage, Music, Quiz, Letters, Machine, Community) */
         /* ========================================================================= */
         <div ref={eraRevealRef} className="w-full animate-fade-in">
           {/* Era Hero Section */}
@@ -295,7 +296,14 @@ export const HomePage: React.FC = () => {
           </section>
 
           {/* ========================================================================= */}
-          {/* 6. COMMUNITY CHANNELS — MEME PACK & HOUSE OF ZAELION */}
+          {/* 6. THE SELF-SABOTAGE MACHINE (MODEL: SS-01) */}
+          {/* ========================================================================= */}
+          <div className="border-b border-petrol-800/80">
+            <SelfSabotageMachine />
+          </div>
+
+          {/* ========================================================================= */}
+          {/* 7. COMMUNITY CHANNELS — MEME PACK & HOUSE OF ZAELION */}
           {/* ========================================================================= */}
           <section
             aria-label="Community Channels"

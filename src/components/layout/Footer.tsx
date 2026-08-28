@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useEntry } from '../../context/EntryContext';
+import { socialLinks } from '../../data/socialLinks';
 
 export const Footer: React.FC = () => {
   const { replayEntry, hasEntered } = useEntry();
@@ -16,7 +17,7 @@ export const Footer: React.FC = () => {
         </p>
 
         {/* Quiet utility links */}
-        <div className="flex flex-wrap justify-center items-center gap-5 text-xs text-text-muted mb-6">
+        <div className="flex flex-wrap justify-center items-center gap-5 text-xs text-text-muted mb-4">
           <Link to="/about" className="hover:text-text-primary transition-colors">
             Who is ARZAEL
           </Link>
@@ -33,12 +34,45 @@ export const Footer: React.FC = () => {
               <span className="text-petrol-700">•</span>
               <button
                 onClick={replayEntry}
-                className="text-flesh-400/90 hover:text-flesh-300 transition-colors focus:outline-none"
+                className="text-flesh-400/90 hover:text-flesh-300 transition-colors focus:outline-none cursor-pointer"
               >
                 Replay Entrance
               </button>
             </>
           )}
+        </div>
+
+        {/* Canonical Quiet Social Fallback Links */}
+        <div className="flex flex-wrap justify-center items-center gap-4 text-[11px] font-mono text-petrol-400/80 mb-6">
+          <a
+            href={socialLinks.tiktok.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={socialLinks.tiktok.ariaLabel}
+            className="hover:text-flesh-300 uppercase tracking-widest transition-colors"
+          >
+            TIKTOK
+          </a>
+          <span className="text-petrol-800">·</span>
+          <a
+            href={socialLinks.instagram.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={socialLinks.instagram.ariaLabel}
+            className="hover:text-flesh-300 uppercase tracking-widest transition-colors"
+          >
+            INSTAGRAM
+          </a>
+          <span className="text-petrol-800">·</span>
+          <a
+            href={socialLinks.spotify.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={socialLinks.spotify.ariaLabel}
+            className="hover:text-flesh-300 uppercase tracking-widest transition-colors"
+          >
+            SPOTIFY
+          </a>
         </div>
 
         <div className="text-[11px] text-text-dim space-y-1">

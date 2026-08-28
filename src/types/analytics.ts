@@ -25,7 +25,11 @@ export type AnalyticsEventType =
   | 'profile_png_saved'
   | 'arzael_meme_pack_clicked'
   | 'house_of_zaelion_whatsapp_clicked'
-  | 'house_of_zaelion_instagram_clicked';
+  | 'house_of_zaelion_instagram_clicked'
+  | 'self_sabotage_machine_viewed'
+  | 'machine_mechanism_activated'
+  | 'social_platform_clicked'
+  | 'machine_overload_completed';
 
 export interface AnalyticsPayload {
   event: AnalyticsEventType;
