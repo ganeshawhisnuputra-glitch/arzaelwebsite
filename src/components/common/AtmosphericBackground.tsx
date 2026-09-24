@@ -13,7 +13,7 @@ export type EnvironmentVariant =
 interface AtmosphericBackgroundProps {
   variant?: EnvironmentVariant;
   className?: string;
-  overlayOpacity?: 'light' | 'medium' | 'deep' | 'heavy';
+  isHero?: boolean;
 }
 
 const ENVIRONMENT_IMAGES: Record<EnvironmentVariant, string> = {
@@ -27,42 +27,41 @@ const ENVIRONMENT_IMAGES: Record<EnvironmentVariant, string> = {
   about: '/assets/environments/corridor.jpg',
 };
 
-const OVERLAY_CLASSES: Record<string, string> = {
-  light: 'bg-petrol-950/70',
-  medium: 'bg-petrol-950/80',
-  deep: 'bg-petrol-950/88',
-  heavy: 'bg-petrol-950/94',
-};
-
 export const AtmosphericBackground: React.FC<AtmosphericBackgroundProps> = ({
   variant = 'corridor',
   className = '',
-  overlayOpacity = 'deep',
+  isHero = false,
 }) => {
   const imgSrc = ENVIRONMENT_IMAGES[variant] || ENVIRONMENT_IMAGES.corridor;
 
   return (
     <div className={`fixed inset-0 pointer-events-none -z-10 overflow-hidden ${className}`}>
-      {/* 1. Base dark void */}
-      <div className="absolute inset-0 bg-[#020708]" />
+      {/* 1. Deep Blue-Black Petrol Void base */}
+      <div className="absolute inset-0 bg-[#041D1E]" />
 
-      {/* 2. Color-graded environmental imagery with subtle ambient drift */}
+      {/* 2. Real Visible Environmental Photography with gentle 20s drift */}
       <div
         style={{
           backgroundImage: `url('${imgSrc}')`,
-          backgroundPosition: 'center',
+          backgroundPosition: 'center center',
           backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
         }}
-        className="absolute inset-0 opacity-25 mix-blend-luminosity filter contrast-125 brightness-75 scale-105 motion-safe:animate-ambient-drift"
+        className={`absolute inset-0 ${
+          isHero ? 'opacity-75 sm:opacity-85' : 'opacity-40 sm:opacity-50'
+        } filter contrast-115 brightness-90 motion-safe:animate-ambient-drift transition-opacity duration-1000`}
       />
 
-      {/* 3. Deep petrol-teal color grading tint */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#031114]/90 via-[#04191e]/85 to-[#020708]/95 mix-blend-multiply" />
+      {/* 3. Cinematic Petrol-Teal Color-Grade Layer */}
+      <div className="absolute inset-0 bg-[#0D5659]/30 mix-blend-color" />
 
-      {/* 4. Atmospheric Vignette & Contrast Guard */}
-      <div
-        className={`absolute inset-0 ${OVERLAY_CLASSES[overlayOpacity]} [background:radial-gradient(circle_at_center,transparent_0%,#020708_85%)]`}
-      />
+      {/* 4. Left-to-right reading gradient + Atmospheric Vignette */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#041D1E]/95 via-[#041D1E]/70 to-[#041D1E]/40" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#041D1E] via-transparent to-[#041D1E]/80" />
+      <div className="absolute inset-0 [background:radial-gradient(circle_at_70%_45%,transparent_25%,rgba(4,29,30,0.85)_100%)]" />
+
+      {/* 5. Restrained Distant Light Ambient Breathing */}
+      <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-[#1FA6AC]/10 rounded-full blur-3xl animate-pulse-subtle pointer-events-none" />
     </div>
   );
 };

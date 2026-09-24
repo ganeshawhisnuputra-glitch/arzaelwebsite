@@ -12,55 +12,62 @@
 
 @layer base {
   :root {
-    --color-petrol-base: #030c0e;
-    --color-petrol-surface: #06171b;
-    --color-petrol-elevated: #0a2228;
-    --color-petrol-border: rgba(20, 114, 135, 0.2);
-    --color-petrol-accent: #147287;
-    --color-petrol-glow: #1fb4d4;
+    --color-petrol-base: #041D1E;
+    --color-petrol-surface: #072C2E;
+    --color-petrol-elevated: #0A3B3E;
+    --color-petrol-border: rgba(13, 86, 89, 0.4);
+    --color-petrol-accent: #0D5659;
+    --color-petrol-glow: #1FA6AC;
     
-    --color-flesh-base: #d97e78;
-    --color-flesh-highlight: #f09f9a;
-    --color-flesh-glow: rgba(217, 126, 120, 0.15);
+    --color-flesh-base: #D9878D;
+    --color-flesh-highlight: #E8A5A9;
+    --color-flesh-glow: rgba(217, 135, 141, 0.25);
 
-    --color-text-primary: #e8ecec;
-    --color-text-muted: #809498;
-    --color-text-dim: #48595d;
+    --color-beige-base: #F3EBD7;
+    --color-beige-muted: #D1C5A5;
+
+    --color-text-primary: #F3EBD7;
+    --color-text-muted: #A3BCBD;
+    --color-text-dim: #688485;
   }
 
   body {
     background-color: var(--color-petrol-base);
     color: var(--color-text-primary);
     overflow-x: hidden;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
 
-  /* Custom scrollbar for deep atmospheric feel */
+  /* Custom atmospheric scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #020708;
+    background: #031516;
   }
   ::-webkit-scrollbar-thumb {
-    background: #0c282f;
-    border-radius: 3px;
+    background: #0D5659;
+    border-radius: 2px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #147287;
+    background: #1FA6AC;
   }
 }
 
 @layer utilities {
   .text-shadow-subtle {
-    text-shadow: 0 0 20px rgba(31, 180, 212, 0.3);
+    text-shadow: 0 0 20px rgba(13, 86, 89, 0.4);
   }
   .flesh-glow {
-    box-shadow: 0 0 25px rgba(217, 126, 120, 0.12);
+    box-shadow: 0 0 25px rgba(217, 135, 141, 0.18);
   }
   .petrol-glow {
-    box-shadow: 0 0 30px rgba(20, 114, 135, 0.18);
+    box-shadow: 0 0 30px rgba(13, 86, 89, 0.3);
+  }
+  .font-display-title {
+    font-family: 'Knewave', cursive, sans-serif;
+    letter-spacing: 0.04em;
   }
 }
 

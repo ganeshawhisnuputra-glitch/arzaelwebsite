@@ -8,59 +8,51 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Canonical Campaign Palette
         petrol: {
-          950: '#030c0e', // Primary deepest black/teal void
-          900: '#06171b', // Deep elevated surface
-          850: '#0a2228', // Elevated card / border subtle
-          800: '#0f2f37', // Hover state / container border
-          700: '#144652', // Interactive subtle
-          600: '#155d6e', // Deep petrol mid
-          500: '#147287', // Primary signature petrol teal
-          400: '#1fb4d4', // Bright teal accent / glow
-          300: '#67d5eb', // Soft teal highlight
-          200: '#b2edfa', // Pale teal flash
+          950: '#041D1E', // Deep blue-black void
+          900: '#072C2E', // Deep ambient background
+          850: '#0A3B3E', // Elevated panel / subtle depth
+          800: '#0D5659', // Signature Campaign Petrol Teal
+          700: '#116C70', // Interactive teal highlight
+          600: '#168A8F', // Medium teal
+          500: '#1FA6AC', // Vibrant teal accent
+          400: '#38C2C8', // Glow teal
         },
         flesh: {
-          950: '#1e0c0b', // Deep bruised shadow
-          900: '#2d1413', // Subdued flesh background
-          800: '#48201e', // Muted flesh border
-          700: '#692f2b', // Flesh lowlight
-          600: '#9b4843', // Deep flesh coral
-          500: '#d97e78', // Primary signature flesh pink / dirty coral
-          400: '#f09f9a', // Tender flesh highlight
-          300: '#fabeb9', // Pale exposed flesh
-          200: '#fde0dd', // Soft tender wash
+          950: '#1F0F11', // Deep bruised shadow
+          900: '#381A1C', // Subdued flesh background
+          800: '#5C2B2F', // Muted flesh border
+          700: '#8A3E44', // Dark flesh coral
+          500: '#D9878D', // Signature Muted Flesh Pink Accent
+          400: '#E8A5A9', // Tender highlight
+          300: '#F2C2C5', // Pale exposed flesh
+          200: '#F9DFE1', // Soft tender wash
         },
-        cream: {
-          50: '#faf7f2',
-          100: '#f4ede2',
-          200: '#eee3d2',
-          300: '#e3d4be',
-          400: '#d4c2a5',
-        },
-        void: {
-          black: '#020708',
-          card: 'rgba(6, 23, 27, 0.75)',
-          overlay: 'rgba(2, 7, 8, 0.85)',
-          border: 'rgba(20, 114, 135, 0.18)',
+        beige: {
+          50: '#FAF6EE',
+          100: '#F3EBD7', // Signature Dirty Warm Beige / Aged Paper
+          200: '#E8DCBF',
+          300: '#DACBA3',
+          400: '#C5B383',
+          500: '#A9945F',
         },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
         serif: ['Cinzel', 'Playfair Display', 'Georgia', 'serif'],
-        mono: ['JetBrains Mono', 'Fira Code', 'Courier New', 'monospace'],
         display: ['Knewave', 'cursive'],
       },
       letterSpacing: {
-        'widest-artist': '0.3em',
-        'subtle-expand': '0.15em',
+        'widest-artist': '0.25em',
+        'subtle-expand': '0.12em',
         'editorial': '0.04em',
       },
       animation: {
         'ouroboros-spin': 'ouroboros 24s linear infinite',
-        'pulse-subtle': 'pulseSlow 6s ease-in-out infinite',
-        'fade-in': 'fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-        'ambient-drift': 'ambientDrift 18s ease-in-out infinite alternate',
+        'pulse-subtle': 'pulseSlow 8s ease-in-out infinite',
+        'fade-in': 'fadeIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'ambient-drift': 'ambientDrift 20s ease-in-out infinite alternate',
       },
       keyframes: {
         ouroboros: {
@@ -69,16 +61,16 @@ export default {
         },
         pulseSlow: {
           '0%, 100%': { opacity: '0.4' },
-          '50%': { opacity: '0.85' },
+          '50%': { opacity: '0.8' },
         },
         fadeIn: {
-          '0%': { opacity: '0', transform: 'translateY(8px)' },
+          '0%': { opacity: '0', transform: 'translateY(6px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         ambientDrift: {
           '0%': { transform: 'scale(1.02) translate(0px, 0px)' },
-          '50%': { transform: 'scale(1.05) translate(-6px, -4px)' },
-          '100%': { transform: 'scale(1.02) translate(4px, 2px)' },
+          '50%': { transform: 'scale(1.06) translate(-8px, -5px)' },
+          '100%': { transform: 'scale(1.02) translate(6px, 3px)' },
         },
       }
     },

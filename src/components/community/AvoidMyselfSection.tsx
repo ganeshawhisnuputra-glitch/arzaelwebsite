@@ -2,12 +2,12 @@ import React from 'react';
 import { socialLinks } from '../../data/socialLinks';
 import { ExternalLink } from 'lucide-react';
 
-const InstagramIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
+const InstagramIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
   <svg
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    strokeWidth="2"
+    strokeWidth="1.8"
     strokeLinecap="round"
     strokeLinejoin="round"
     className={className}
@@ -18,7 +18,7 @@ const InstagramIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4'
   </svg>
 );
 
-const TikTokIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
+const TikTokIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
   <svg
     viewBox="0 0 24 24"
     fill="currentColor"
@@ -28,7 +28,7 @@ const TikTokIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' })
   </svg>
 );
 
-const SpotifyIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
+const SpotifyIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
   <svg
     viewBox="0 0 24 24"
     fill="currentColor"
@@ -45,16 +45,20 @@ export const AvoidMyselfSection: React.FC = () => {
       className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28"
     >
       {/* Section Header */}
-      <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
-        <h2 className="font-serif text-3xl sm:text-5xl lg:text-6xl text-text-primary tracking-editorial font-normal">
+      <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+        <span className="font-sans text-xs text-flesh-500 tracking-widest uppercase block font-semibold">
+          THE WARD EXITS
+        </span>
+
+        <h2 className="font-serif text-3xl sm:text-5xl lg:text-6xl text-beige-100 tracking-editorial font-normal leading-tight">
           THE PLACES I GO TO AVOID MYSELF.
         </h2>
 
-        <p className="text-base sm:text-lg text-text-muted leading-relaxed font-sans">
+        <p className="text-base sm:text-lg text-beige-100/70 leading-relaxed font-sans">
           Three ways to stay distracted. Three rooms in the same institution.
         </p>
 
-        <p className="font-serif italic text-sm text-flesh-300">
+        <p className="font-serif italic text-base text-flesh-500">
           Pick an exit that leads back in.
         </p>
       </div>
@@ -69,38 +73,33 @@ export const AvoidMyselfSection: React.FC = () => {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={socialLinks.tiktok.ariaLabel}
-          className="group relative flex flex-col justify-between p-8 bg-[#040f12]/80 border border-petrol-800/80 hover:border-flesh-500/60 rounded-sm transition-all duration-500 overflow-hidden hover:shadow-[0_0_35px_rgba(31,180,212,0.12)] cursor-pointer"
+          className="group relative flex flex-col justify-between p-8 bg-[#072C2E]/80 border border-[#0D5659] hover:border-flesh-500/70 rounded-sm transition-all duration-500 overflow-hidden hover:shadow-[0_0_30px_rgba(217,135,141,0.15)] cursor-pointer"
         >
-          {/* Subtle Screen Glow Effect */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-32 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/10 transition-all pointer-events-none" />
-
-          {/* Visual Motif: Screen Aperture */}
           <div className="space-y-6 relative z-10">
-            <div className="w-12 h-12 rounded-sm bg-petrol-950 border border-petrol-700/80 flex items-center justify-center text-cyan-400 group-hover:text-flesh-300 group-hover:border-flesh-500/60 transition-colors shadow-inner">
-              <TikTokIcon className="w-5 h-5" />
+            <div className="w-12 h-12 rounded-sm bg-[#041D1E] border border-[#0D5659] flex items-center justify-center text-beige-100 group-hover:text-flesh-500 group-hover:border-flesh-500 transition-colors">
+              <TikTokIcon />
             </div>
 
             <div className="space-y-2">
-              <span className="font-mono text-xs text-text-dim uppercase tracking-widest block">
+              <span className="font-sans text-xs text-flesh-500/90 uppercase tracking-widest block font-medium">
                 {socialLinks.tiktok.handle}
               </span>
-              <h3 className="font-serif text-2xl text-text-primary group-hover:text-flesh-200 transition-colors tracking-editorial">
+              <h3 className="font-serif text-2xl sm:text-3xl text-beige-100 group-hover:text-flesh-500 transition-colors tracking-editorial">
                 THE ENDLESS SCREEN
               </h3>
-              <p className="text-sm text-text-muted italic font-serif">
+              <p className="text-sm text-flesh-500 italic font-serif">
                 “{socialLinks.tiktok.microcopy}”
               </p>
             </div>
 
-            <p className="text-xs text-text-dim leading-relaxed font-sans">
+            <p className="text-sm text-beige-100/70 leading-relaxed font-sans">
               Falling through five hours of stranger's lives so you don't have to look at your own.
             </p>
           </div>
 
-          {/* Action CTA */}
-          <div className="pt-8 relative z-10 flex items-center gap-2 text-xs font-mono tracking-widest text-flesh-400 group-hover:text-flesh-200 uppercase transition-colors">
+          <div className="pt-8 relative z-10 flex items-center gap-2 text-xs font-sans tracking-widest text-flesh-500 group-hover:text-beige-100 uppercase transition-colors font-semibold">
             <span>ENTER THE LOOP</span>
-            <ExternalLink className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+            <ExternalLink className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
           </div>
         </a>
 
@@ -112,38 +111,33 @@ export const AvoidMyselfSection: React.FC = () => {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={socialLinks.instagram.ariaLabel}
-          className="group relative flex flex-col justify-between p-8 bg-[#040f12]/80 border border-petrol-800/80 hover:border-flesh-500/60 rounded-sm transition-all duration-500 overflow-hidden hover:shadow-[0_0_35px_rgba(217,126,120,0.12)] cursor-pointer"
+          className="group relative flex flex-col justify-between p-8 bg-[#072C2E]/80 border border-[#0D5659] hover:border-flesh-500/70 rounded-sm transition-all duration-500 overflow-hidden hover:shadow-[0_0_30px_rgba(217,135,141,0.15)] cursor-pointer"
         >
-          {/* Subtle Broken Glass Refraction Overlay */}
-          <div className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none bg-[radial-gradient(#d97e78_1px,transparent_1px)] [background-size:16px_16px]" />
-
-          {/* Visual Motif: Tarnished Glass */}
           <div className="space-y-6 relative z-10">
-            <div className="w-12 h-12 rounded-sm bg-petrol-950 border border-petrol-700/80 flex items-center justify-center text-flesh-400 group-hover:border-flesh-500/60 transition-colors shadow-inner">
-              <InstagramIcon className="w-5 h-5" />
+            <div className="w-12 h-12 rounded-sm bg-[#041D1E] border border-[#0D5659] flex items-center justify-center text-beige-100 group-hover:text-flesh-500 group-hover:border-flesh-500 transition-colors">
+              <InstagramIcon />
             </div>
 
             <div className="space-y-2">
-              <span className="font-mono text-xs text-text-dim uppercase tracking-widest block">
+              <span className="font-sans text-xs text-flesh-500/90 uppercase tracking-widest block font-medium">
                 {socialLinks.instagram.handle}
               </span>
-              <h3 className="font-serif text-2xl text-text-primary group-hover:text-flesh-200 transition-colors tracking-editorial">
+              <h3 className="font-serif text-2xl sm:text-3xl text-beige-100 group-hover:text-flesh-500 transition-colors tracking-editorial">
                 THE CRACKED MIRROR
               </h3>
-              <p className="text-sm text-text-muted italic font-serif">
+              <p className="text-sm text-flesh-500 italic font-serif">
                 “{socialLinks.instagram.microcopy}”
               </p>
             </div>
 
-            <p className="text-xs text-text-dim leading-relaxed font-sans">
+            <p className="text-sm text-beige-100/70 leading-relaxed font-sans">
               Comparing your raw internal wreckage against everybody else's edited exhibition.
             </p>
           </div>
 
-          {/* Action CTA */}
-          <div className="pt-8 relative z-10 flex items-center gap-2 text-xs font-mono tracking-widest text-flesh-400 group-hover:text-flesh-200 uppercase transition-colors">
+          <div className="pt-8 relative z-10 flex items-center gap-2 text-xs font-sans tracking-widest text-flesh-500 group-hover:text-beige-100 uppercase transition-colors font-semibold">
             <span>LOOK CLOSER</span>
-            <ExternalLink className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+            <ExternalLink className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
           </div>
         </a>
 
@@ -155,38 +149,33 @@ export const AvoidMyselfSection: React.FC = () => {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={socialLinks.spotify.ariaLabel}
-          className="group relative flex flex-col justify-between p-8 bg-[#040f12]/80 border border-petrol-800/80 hover:border-flesh-500/60 rounded-sm transition-all duration-500 overflow-hidden hover:shadow-[0_0_35px_rgba(31,180,212,0.15)] cursor-pointer"
+          className="group relative flex flex-col justify-between p-8 bg-[#072C2E]/80 border border-[#0D5659] hover:border-flesh-500/70 rounded-sm transition-all duration-500 overflow-hidden hover:shadow-[0_0_30px_rgba(217,135,141,0.15)] cursor-pointer"
         >
-          {/* Subtle Vinyl Ambient Light */}
-          <div className="absolute top-0 right-0 w-48 h-32 bg-flesh-500/5 rounded-full blur-2xl group-hover:bg-flesh-500/10 transition-all pointer-events-none" />
-
-          {/* Visual Motif: Vinyl / Needle */}
           <div className="space-y-6 relative z-10">
-            <div className="w-12 h-12 rounded-sm bg-petrol-950 border border-petrol-700/80 flex items-center justify-center text-flesh-300 group-hover:border-flesh-500/60 transition-colors shadow-inner">
-              <SpotifyIcon className="w-5 h-5" />
+            <div className="w-12 h-12 rounded-sm bg-[#041D1E] border border-[#0D5659] flex items-center justify-center text-beige-100 group-hover:text-flesh-500 group-hover:border-flesh-500 transition-colors">
+              <SpotifyIcon />
             </div>
 
             <div className="space-y-2">
-              <span className="font-mono text-xs text-text-dim uppercase tracking-widest block">
+              <span className="font-sans text-xs text-flesh-500/90 uppercase tracking-widest block font-medium">
                 {socialLinks.spotify.handle}
               </span>
-              <h3 className="font-serif text-2xl text-text-primary group-hover:text-flesh-200 transition-colors tracking-editorial">
+              <h3 className="font-serif text-2xl sm:text-3xl text-beige-100 group-hover:text-flesh-500 transition-colors tracking-editorial">
                 THE WORN RECORD
               </h3>
-              <p className="text-sm text-text-muted italic font-serif">
+              <p className="text-sm text-flesh-500 italic font-serif">
                 “{socialLinks.spotify.microcopy}”
               </p>
             </div>
 
-            <p className="text-xs text-text-dim leading-relaxed font-sans">
+            <p className="text-sm text-beige-100/70 leading-relaxed font-sans">
               Replaying the exact same feelings over and over until the needle carves straight through the bone.
             </p>
           </div>
 
-          {/* Action CTA */}
-          <div className="pt-8 relative z-10 flex items-center gap-2 text-xs font-mono tracking-widest text-flesh-400 group-hover:text-flesh-200 uppercase transition-colors">
+          <div className="pt-8 relative z-10 flex items-center gap-2 text-xs font-sans tracking-widest text-flesh-500 group-hover:text-beige-100 uppercase transition-colors font-semibold">
             <span>HEAR THE RECORD</span>
-            <ExternalLink className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+            <ExternalLink className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
           </div>
         </a>
       </div>
