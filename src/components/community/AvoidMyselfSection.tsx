@@ -1,6 +1,6 @@
 import React from 'react';
 import { socialLinks } from '../../data/socialLinks';
-import { ExternalLink, Disc, Smartphone } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 
 const InstagramIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
   <svg
