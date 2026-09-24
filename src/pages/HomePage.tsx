@@ -2,28 +2,17 @@ import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useAudio } from '../context/AudioContext';
 import { useModal } from '../context/ModalContext';
-import { useEntry } from '../context/EntryContext';
 import { SELF_SABOTAGE_TRACKS } from '../data/selfSabotageEra';
-import { OuroborosTransition } from '../components/common/OuroborosTransition';
 import { QuizPreviewCard } from '../components/quiz/QuizPreviewCard';
 import { AvoidMyselfSection } from '../components/community/AvoidMyselfSection';
 import { CommunitySection } from '../components/community/CommunitySection';
 import { Play, ArrowRight, Mail, Sparkles } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
-  const { enterWorld } = useEntry();
-  const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
-  const [transitionKey, setTransitionKey] = useState<number>(0);
   const [showQuiz, setShowQuiz] = useState<boolean>(false);
   const { playTrack } = useAudio();
   const { openLetters } = useModal();
   const quizSectionRef = useRef<HTMLDivElement>(null);
-
-  // Called when video transition completes or is skipped
-  const handleTransitionComplete = () => {
-    enterWorld();
-    setIsTransitioning(false);
-  };
 
   const handleRevealQuiz = () => {
     setShowQuiz(true);
@@ -34,14 +23,6 @@ export const HomePage: React.FC = () => {
 
   return (
     <div className="w-full flex flex-col text-beige-100 selection:bg-flesh-500/30 selection:text-beige-100 relative min-h-screen bg-[#041D1E]">
-      {/* Active Ouroboros Entry Video Transition Overlay */}
-      {isTransitioning && (
-        <OuroborosTransition
-          key={transitionKey}
-          onComplete={handleTransitionComplete}
-        />
-      )}
-
       {/* ========================================================================= */}
       {/* 1. INITIAL HERO VIEWPORT (Real Hospital Corridor Background Directly Embedded) */}
       {/* ========================================================================= */}
