@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
 import { VIDEOS_DATA } from '../data/videos';
 import { MediaPlaceholder } from '../components/common/MediaPlaceholder';
+import { AtmosphericBackground } from '../components/common/AtmosphericBackground';
 import { Play } from 'lucide-react';
 
 export const WatchPage: React.FC = () => {
   const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 animate-fade-in">
-      <div className="max-w-2xl mb-12">
-        <span className="font-mono text-xs text-flesh-400 tracking-widest-artist uppercase mb-3 block">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-24 animate-fade-in relative">
+      {/* Environmental Backdrop */}
+      <AtmosphericBackground variant="watch" overlayOpacity="deep" />
+
+      <div className="max-w-2xl mb-14 space-y-3">
+        <span className="font-mono text-xs text-flesh-400 tracking-widest-artist uppercase block">
           [ VISUAL CINEMA ]
         </span>
-        <h1 className="font-serif text-4xl sm:text-6xl text-text-primary tracking-editorial font-bold mb-4">
+        <h1 className="font-serif text-4xl sm:text-6xl text-text-primary tracking-editorial font-normal">
           YOU SHOULD PROBABLY SEE THIS.
         </h1>
-        <p className="text-base text-text-muted italic">
-          "Some things made more sense when I stopped trying to explain them."
+        <p className="font-serif text-xl text-text-muted italic">
+          “Some things made more sense when I stopped trying to explain them.”
         </p>
       </div>
 
@@ -24,7 +28,7 @@ export const WatchPage: React.FC = () => {
         {VIDEOS_DATA.map((video, idx) => (
           <article
             key={video.id}
-            className="bg-petrol-900/40 border border-petrol-800 p-6 sm:p-8 hover:border-petrol-600 transition-all"
+            className="bg-[#040f12]/85 border border-petrol-800/80 p-6 sm:p-8 hover:border-petrol-600 transition-all rounded-sm"
           >
             <div className="relative mb-6">
               {activeVideoId === video.id ? (
@@ -67,15 +71,15 @@ export const WatchPage: React.FC = () => {
                   {video.title}
                 </h2>
                 {video.statement && (
-                  <p className="text-xs sm:text-sm text-text-muted italic mt-1">
-                    "{video.statement}"
+                  <p className="text-xs sm:text-sm text-text-muted italic mt-1 font-sans">
+                    “{video.statement}”
                   </p>
                 )}
               </div>
 
               {idx === 0 && (
                 <div className="text-right sm:self-center">
-                  <span className="font-mono text-[10px] text-petrol-400 tracking-wider block">
+                  <span className="font-mono text-[10px] text-petrol-400 tracking-wider block uppercase">
                     FEATURED VISUAL
                   </span>
                 </div>
@@ -86,8 +90,8 @@ export const WatchPage: React.FC = () => {
       </div>
 
       <div className="mt-16 text-center border-t border-petrol-800/80 pt-12">
-        <p className="font-serif text-lg text-text-primary mb-1">Still here?</p>
-        <p className="font-mono text-xs text-text-muted tracking-wider">
+        <p className="font-serif text-xl text-text-primary mb-1">Still here?</p>
+        <p className="font-mono text-xs text-text-muted tracking-wider uppercase">
           More films and visualizers are being cut in the dark.
         </p>
       </div>

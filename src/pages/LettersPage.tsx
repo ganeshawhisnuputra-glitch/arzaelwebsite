@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CommunitySection } from '../components/community/CommunitySection';
+import { AtmosphericBackground } from '../components/common/AtmosphericBackground';
 
 export const LettersPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -12,14 +13,17 @@ export const LettersPage: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 animate-fade-in flex flex-col items-center space-y-20">
+    <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 animate-fade-in flex flex-col items-center space-y-20 relative">
+      {/* Intimate environmental backdrop */}
+      <AtmosphericBackground variant="hospital-ward" overlayOpacity="deep" />
+
       {/* 1. Direct Correspondence (Letters) */}
       <div className="w-full max-w-3xl flex flex-col items-center text-center">
         <span className="font-mono text-xs text-flesh-400 tracking-widest-artist uppercase mb-4">
           [ DIRECT CORRESPONDENCE ]
         </span>
 
-        <h1 className="font-serif text-4xl sm:text-6xl text-text-primary tracking-editorial font-bold mb-6">
+        <h1 className="font-serif text-4xl sm:text-6xl text-text-primary tracking-editorial font-normal mb-6">
           CAN I WRITE TO YOU?
         </h1>
 
@@ -27,7 +31,7 @@ export const LettersPage: React.FC = () => {
           <p>
             Social media feels like talking in a room where everyone is screaming.
           </p>
-          <p className="text-text-primary font-medium">
+          <p className="text-text-primary font-medium font-serif italic text-xl">
             I want somewhere quieter.
           </p>
           <p className="text-sm text-text-muted">
@@ -39,7 +43,7 @@ export const LettersPage: React.FC = () => {
         </div>
 
         {isSubmitted ? (
-          <div className="w-full max-w-md p-8 bg-petrol-900/80 border border-flesh-500/60 shadow-2xl animate-fade-in text-center">
+          <div className="w-full max-w-md p-8 bg-petrol-950/90 border border-flesh-500/60 shadow-2xl animate-fade-in text-center rounded-sm">
             <span className="font-mono text-xs text-flesh-400 tracking-widest uppercase block mb-2">
               [ CONNECTION RECORDED ]
             </span>
@@ -59,7 +63,7 @@ export const LettersPage: React.FC = () => {
         ) : (
           <form
             onSubmit={handleSubmit}
-            className="w-full max-w-md bg-petrol-900/40 border border-petrol-800 p-6 sm:p-8"
+            className="w-full max-w-md bg-petrol-950/80 border border-petrol-800 p-6 sm:p-8 rounded-sm"
           >
             <div className="text-left mb-6">
               <label
@@ -75,13 +79,13 @@ export const LettersPage: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="where should I send it?"
-                className="w-full px-4 py-3.5 bg-petrol-950/90 border border-petrol-700 text-sm text-text-primary placeholder:text-text-dim focus:outline-none focus:border-flesh-400 focus:ring-1 focus:ring-flesh-400 font-mono transition-colors"
+                className="w-full px-4 py-3.5 bg-petrol-900/90 border border-petrol-700 text-sm text-text-primary placeholder:text-text-dim focus:outline-none focus:border-flesh-400 focus:ring-1 focus:ring-flesh-400 font-mono transition-colors"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-3.5 bg-flesh-900/80 border border-flesh-500 text-xs font-mono tracking-widest-artist uppercase text-flesh-200 hover:bg-flesh-800 hover:text-white transition-all flesh-glow"
+              className="w-full py-3.5 bg-flesh-900/90 border border-flesh-500 text-xs font-mono tracking-widest-artist uppercase text-flesh-200 hover:bg-flesh-800 hover:text-white transition-all flesh-glow cursor-pointer"
             >
               WRITE TO ME
             </button>

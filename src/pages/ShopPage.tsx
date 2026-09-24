@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { PRODUCTS_DATA } from '../data/products';
 import { MediaPlaceholder } from '../components/common/MediaPlaceholder';
+import { AtmosphericBackground } from '../components/common/AtmosphericBackground';
 import { ShoppingBag, Check } from 'lucide-react';
 
 export const ShopPage: React.FC = () => {
@@ -24,16 +25,19 @@ export const ShopPage: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 animate-fade-in">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-24 animate-fade-in relative">
+      {/* Environmental Backdrop */}
+      <AtmosphericBackground variant="shop" overlayOpacity="deep" />
+
       {/* Header & Opening Statement */}
-      <div className="max-w-3xl mb-12">
-        <span className="font-mono text-xs text-flesh-400 tracking-widest-artist uppercase mb-3 block">
+      <div className="max-w-3xl mb-12 space-y-3">
+        <span className="font-mono text-xs text-flesh-400 tracking-widest-artist uppercase block">
           [ ARTIFACTS & EDITIONS ]
         </span>
-        <h1 className="font-serif text-4xl sm:text-6xl text-text-primary tracking-editorial font-bold mb-4">
+        <h1 className="font-serif text-4xl sm:text-6xl text-text-primary tracking-editorial font-normal">
           TAKE SOMETHING WITH YOU.
         </h1>
-        <p className="text-base sm:text-lg text-text-muted leading-relaxed mb-4">
+        <p className="text-base sm:text-lg text-text-muted leading-relaxed font-sans">
           I make some of these things myself. Some exist only for this era.
           <br />
           Once some of them are gone, I don’t know if I’m making them again.
@@ -41,11 +45,11 @@ export const ShopPage: React.FC = () => {
       </div>
 
       {/* Handmade Note Highlight Banner */}
-      <div className="bg-petrol-900/60 border border-flesh-500/40 p-6 sm:p-8 mb-12 relative overflow-hidden">
+      <div className="bg-[#040f12]/90 border border-flesh-500/40 p-6 sm:p-8 mb-12 relative overflow-hidden rounded-sm">
         <span className="font-mono text-xs text-flesh-400 uppercase tracking-widest block mb-2">
           NOTE ON HANDMADE ARTIFACTS
         </span>
-        <h3 className="font-serif text-xl text-text-primary mb-2">MADE BY ME.</h3>
+        <h3 className="font-serif text-2xl text-text-primary mb-2">MADE BY ME.</h3>
         <p className="text-sm text-text-muted leading-relaxed max-w-2xl font-sans">
           Literally. Not “designed by me.” I actually touched these. Which either makes them more valuable or significantly worse. You decide. Every piece is a little different. That’s the point.
         </p>
@@ -58,10 +62,10 @@ export const ShopPage: React.FC = () => {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 text-xs font-mono tracking-widest uppercase transition-all ${
+              className={`px-4 py-2 text-xs font-mono tracking-widest uppercase transition-all rounded-xs cursor-pointer ${
                 selectedCategory === cat
                   ? 'bg-petrol-800 text-flesh-300 border border-flesh-500/60'
-                  : 'bg-petrol-950 text-text-dim border border-petrol-800 hover:text-text-primary hover:border-petrol-600'
+                  : 'bg-petrol-950/80 text-text-dim border border-petrol-800 hover:text-text-primary hover:border-petrol-600'
               }`}
             >
               {cat}
@@ -77,7 +81,7 @@ export const ShopPage: React.FC = () => {
 
       {/* Added notice banner */}
       {addedNotice && (
-        <div className="mb-6 p-3 bg-flesh-950/80 border border-flesh-500 text-flesh-200 text-xs font-mono tracking-wider flex items-center gap-2 animate-fade-in">
+        <div className="mb-6 p-3 bg-flesh-950/90 border border-flesh-500 text-flesh-200 text-xs font-mono tracking-wider flex items-center gap-2 animate-fade-in rounded-xs">
           <Check className="w-4 h-4 text-flesh-400" />
           <span>Added "{addedNotice}" to your collection. (Checkout is inactive in V0)</span>
         </div>
@@ -88,7 +92,7 @@ export const ShopPage: React.FC = () => {
         {filteredProducts.map((product) => (
           <article
             key={product.id}
-            className="bg-petrol-900/40 border border-petrol-800 flex flex-col justify-between p-6 hover:border-petrol-600 transition-all group"
+            className="bg-[#040f12]/80 border border-petrol-800/80 flex flex-col justify-between p-6 hover:border-petrol-600 transition-all rounded-sm group"
           >
             <div>
               <div className="mb-4">
@@ -114,7 +118,7 @@ export const ShopPage: React.FC = () => {
                 </p>
               )}
 
-              <p className="text-xs text-text-muted leading-relaxed mb-4">
+              <p className="text-xs text-text-muted leading-relaxed mb-4 font-sans">
                 {product.description}
               </p>
             </div>
@@ -126,7 +130,7 @@ export const ShopPage: React.FC = () => {
 
               <button
                 onClick={() => handleAddToCart(product.id, product.title)}
-                className="px-5 py-2.5 bg-petrol-900 border border-flesh-500/50 text-xs font-mono tracking-widest-artist uppercase text-flesh-300 hover:bg-flesh-900/80 hover:text-white transition-all flesh-glow"
+                className="px-5 py-2.5 bg-petrol-900 border border-flesh-500/50 text-xs font-mono tracking-widest-artist uppercase text-flesh-300 hover:bg-flesh-900/80 hover:text-white transition-all flesh-glow cursor-pointer"
               >
                 KEEP THIS
               </button>
