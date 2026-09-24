@@ -8,18 +8,24 @@ export const AboutPage: React.FC = () => {
       <AtmosphericBackground variant="hospital-ward" overlayOpacity="deep" />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-        {/* Left: Editorial Portrait / Damaged Monogram Frame */}
+        {/* Left: Authentic Editorial Portrait Frame */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="relative w-full aspect-[4/5] bg-[#040f12]/90 border border-petrol-800/80 rounded-sm p-8 flex flex-col items-center justify-center shadow-2xl overflow-hidden group">
-            <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#147287_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
+          <div className="relative w-full aspect-[4/5] sm:aspect-square lg:aspect-[4/5] bg-[#040f12] border border-petrol-800/80 rounded-sm overflow-hidden shadow-2xl group">
+            {/* The Authentic ARZAEL Portrait Image */}
             <img
-              src="/assets/brand/broken-a.png"
-              alt="ARZAEL Monogram"
-              className="w-3/5 h-3/5 object-contain filter drop-shadow-[0_0_35px_rgba(20,114,135,0.4)] group-hover:scale-105 transition-transform duration-700"
+              src="/assets/brand/arzael-portrait.png"
+              alt="ARZAEL Official Portrait"
+              loading="lazy"
+              className="w-full h-full object-cover object-center filter contrast-105 group-hover:scale-102 transition-transform duration-700"
             />
-            <div className="absolute bottom-4 left-4 right-4 flex justify-between text-[10px] font-mono text-text-dim">
-              <span>ARZAEL</span>
-              <span>OUTSIDER REALM • 2026</span>
+
+            {/* Subtle atmospheric gradient overlay for editorial depth */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#020708]/90 via-transparent to-black/20 pointer-events-none" />
+
+            {/* Editorial Caption Bar */}
+            <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center text-[10px] font-mono text-text-muted bg-[#020708]/75 backdrop-blur-xs px-3 py-1.5 border border-petrol-800/60 rounded-xs">
+              <span className="text-flesh-300 font-bold tracking-widest uppercase">ARZAEL</span>
+              <span className="text-text-dim tracking-wider uppercase">OUTSIDER REALM • 2026</span>
             </div>
           </div>
         </div>
