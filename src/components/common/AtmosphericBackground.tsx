@@ -36,11 +36,11 @@ export const AtmosphericBackground: React.FC<AtmosphericBackgroundProps> = ({
   const imgSrc = ENVIRONMENT_IMAGES[variant] || ENVIRONMENT_IMAGES.corridor;
 
   return (
-    <div className={`fixed inset-0 pointer-events-none -z-10 overflow-hidden ${className}`}>
-      {/* 1. Deep Blue-Black Petrol Void base */}
+    <div className={`fixed inset-0 pointer-events-none z-0 overflow-hidden ${className}`}>
+      {/* 1. Base deep petrol void */}
       <div className="absolute inset-0 bg-[#041D1E]" />
 
-      {/* 2. Real Visible Environmental Photography with gentle 20s drift */}
+      {/* 2. Real Visible Hospital Corridor Photography */}
       <div
         style={{
           backgroundImage: `url('${imgSrc}')`,
@@ -49,20 +49,21 @@ export const AtmosphericBackground: React.FC<AtmosphericBackgroundProps> = ({
           backgroundRepeat: 'no-repeat',
         }}
         className={`absolute inset-0 ${
-          isHero ? 'opacity-80 sm:opacity-90' : 'opacity-45 sm:opacity-55'
-        } filter contrast-115 brightness-95 motion-safe:animate-ambient-drift transition-opacity duration-1000`}
+          isHero ? 'opacity-85' : 'opacity-40'
+        } filter contrast-120 brightness-105 saturate-90 motion-safe:animate-ambient-drift transition-opacity duration-700`}
       />
 
       {/* 3. Cinematic Petrol-Teal Color-Grade Layer */}
       <div className="absolute inset-0 bg-[#0D5659]/30 mix-blend-color" />
 
-      {/* 4. Left-to-right reading gradient + Atmospheric Vignette */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#041D1E]/95 via-[#041D1E]/65 to-[#041D1E]/30" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#041D1E] via-transparent to-[#041D1E]/75" />
-      <div className="absolute inset-0 [background:radial-gradient(circle_at_70%_45%,transparent_25%,rgba(4,29,30,0.85)_100%)]" />
+      {/* 4. Left-to-Right Contrast Vignette: dark on left for text legibility, open & clear on right for corridor visibility */}
+      <div className="absolute inset-0 bg-gradient-to-r from-[#041D1E]/95 via-[#041D1E]/60 to-[#041D1E]/15" />
+      
+      {/* 5. Top & Bottom atmospheric falloff */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#041D1E]/60 via-transparent to-[#041D1E]/90" />
 
-      {/* 5. Restrained Distant Light Ambient Breathing */}
-      <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-[#1FA6AC]/15 rounded-full blur-3xl animate-pulse-subtle pointer-events-none" />
+      {/* 6. Distant Light Ambient Pulsing Glow in the hallway center */}
+      <div className="absolute top-1/2 left-2/3 -translate-y-1/2 -translate-x-1/2 w-[32rem] h-[32rem] bg-[#1FA6AC]/20 rounded-full blur-3xl animate-pulse-subtle pointer-events-none" />
     </div>
   );
 };
