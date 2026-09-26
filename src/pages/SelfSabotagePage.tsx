@@ -1,157 +1,307 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { SELF_SABOTAGE_ERA, SELF_SABOTAGE_TRACKS } from '../data/selfSabotageEra';
-import { AtmosphericBackground } from '../components/common/AtmosphericBackground';
+import { useReducedMotion } from '../hooks/useReducedMotion';
 import { useAudio } from '../context/AudioContext';
-import { Play, Sparkles, ArrowRight, UserCheck } from 'lucide-react';
+import { Track } from '../types/music';
+
+interface TrackItem {
+  id: string;
+  title: string;
+  statement: string;
+  treatment: 'anesthesia' | 'car-hit' | 'wait-a-minute' | 'liar' | 'promise-breaker' | 'desperate-medicine';
+}
+
+const TRACKS: TrackItem[] = [
+  { 
+    id: 'anesthesia', 
+    title: 'ANESTHESIA', 
+    statement: 'For when feeling nothing feels safer than feeling everything.',
+    treatment: 'anesthesia'
+  },
+  { 
+    id: 'the-car-hit', 
+    title: 'THE CAR HIT', 
+    statement: 'The moment you realize the crash already happened.',
+    treatment: 'car-hit'
+  },
+  { 
+    id: 'wait-a-minute', 
+    title: 'WAIT A MINUTE', 
+    statement: 'Asking time to stop while you figure out what you just lost.',
+    treatment: 'wait-a-minute'
+  },
+  { 
+    id: 'liar', 
+    title: 'LIAR', 
+    statement: 'The version of you that promises things you both know you won\'t keep.',
+    treatment: 'liar'
+  },
+  { 
+    id: 'promise-breaker', 
+    title: 'PROMISE BREAKER', 
+    statement: 'Breaking your own word so many times it stops sounding like a word.',
+    treatment: 'promise-breaker'
+  },
+  { 
+    id: 'desperate-medicine', 
+    title: 'DESPERATE MEDICINE', 
+    statement: 'Taking the cure that is also the disease.',
+    treatment: 'desperate-medicine'
+  },
+];
 
 export const SelfSabotagePage: React.FC = () => {
-  const { playTrack } = useAudio();
+  const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
+  const prefersReducedMotion = useReducedMotion();
+  const { playTrack, state, togglePlay } = useAudio();
+  const currentTrackId = state.currentTrack?.id;
+  const isPlaying = state.isPlaying;
+
+  const handleTrackClick = (track: TrackItem) => {
+    if (selectedTrack === track.id) {
+      setSelectedTrack(null);
+    } else {
+      setSelectedTrack(track.id);
+      const trackObj: Track = {
+        id: track.id,
+        title: track.title,
+        artist: 'ARZAEL',
+        era: 'SELF SABOTAGE',
+        statement: track.statement,
+        artworkPlaceholderId: 'PLACEHOLDER_ALBUM_ART',
+        isAvailableForPlayback: true,
+      };
+      playTrack(trackObj);
+    }
+  };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-20 animate-fade-in relative overflow-hidden">
-      {/* Environmental Corridor Backdrop */}
-      <AtmosphericBackground variant="hospital-ward" overlayOpacity="deep" />
+    <div className="min-h-screen bg-[#041D1E] text-[#F3EBD7] relative overflow-hidden font-sans selection:bg-[#D9878D] selection:text-[#041D1E]">
+      {/* Dynamic Background: Ambient Lamp Glow */}
+      <div 
+        className="pointer-events-none absolute inset-0 z-0 transition-opacity duration-700"
+        style={{
+          background: selectedTrack === 'the-car-hit'
+            ? 'radial-gradient(circle at 50% 20%, rgba(13, 86, 89, 0.4) 0%, rgba(4, 29, 30, 0.95) 75%)'
+            : 'radial-gradient(circle at 50% -10%, rgba(217, 135, 141, 0.22) 0%, transparent 60%)'
+        }}
+      />
+      
+      {/* Desk Surface Texture */}
+      <div 
+        className="pointer-events-none absolute inset-0 z-0 opacity-15"
+        style={{
+          backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.8\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100\' height=\'100\' filter=\'url(%23noise)\' opacity=\'0.5\'/%3E%3C/svg%3E")'
+        }}
+      />
 
-      <div className="relative z-10">
-      {/* Header & Clinical Admission Statement */}
-      <div className="max-w-3xl mb-16 space-y-6">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-petrol-950/90 border border-petrol-700/60 text-xs font-mono tracking-widest text-flesh-300 uppercase">
-          <span>CASE FILE</span>
-          <span className="text-petrol-600">•</span>
-          <span>{SELF_SABOTAGE_ERA.years}</span>
-        </div>
+      {/* Specific Ambient effect for THE CAR HIT: rain shimmer */}
+      {selectedTrack === 'the-car-hit' && (
+        <div className="pointer-events-none absolute inset-0 z-0 opacity-25 mix-blend-screen bg-gradient-to-b from-transparent via-[#0D5659]/20 to-transparent animate-pulse" />
+      )}
 
-        <div className="max-w-md pt-1">
-          <img
-            src="/assets/brand/self-sabotage-title.png"
-            alt="SELF SABOTAGE"
-            className="w-full h-auto object-contain filter drop-shadow-[0_0_25px_rgba(217,126,120,0.3)]"
-          />
-        </div>
-
-        <blockquote className="text-lg sm:text-2xl text-text-primary leading-relaxed border-l-2 border-flesh-500/60 pl-5 font-serif italic">
-          “{SELF_SABOTAGE_ERA.statement}”
-        </blockquote>
-
-        <p className="text-base text-text-muted leading-relaxed font-sans max-w-2xl">
-          {SELF_SABOTAGE_ERA.description}
-        </p>
-      </div>
-
-      {/* Main Content Grid: Artwork Monogram & Track Manifest */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start mb-20">
-        {/* Left Column: Broken Glass Monogram Frame */}
-        <div className="lg:col-span-5 space-y-4">
-          <div className="relative w-full aspect-square bg-[#040f12]/90 border border-petrol-800/80 rounded-sm p-8 flex items-center justify-center shadow-2xl overflow-hidden group">
-            <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#147287_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
-            <img
-              src="/assets/brand/ouroboros-cracked.png"
-              alt="ARZAEL Ouroboros Cracked"
-              className="w-4/5 h-4/5 object-contain filter drop-shadow-[0_0_35px_rgba(20,114,135,0.4)] group-hover:scale-105 transition-transform duration-700"
+      <div className="relative z-10 container mx-auto px-4 pt-8 md:pt-10 pb-28 flex flex-col items-center">
+        
+        {/* Main Case Sheet */}
+        <div className="w-full max-w-xl bg-[#F3EBD7] text-[#041D1E] p-5 md:p-6 shadow-[0_20px_40px_-10px_rgba(0,0,0,0.6)] rotate-1 transition-transform hover:rotate-0 duration-300 mb-8 relative border border-[#DACBA3]">
+          {/* Paper Corner Clips */}
+          <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-[#041D1E]/30" />
+          <div className="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-[#041D1E]/30" />
+          
+          <div className="flex flex-col items-center gap-3 text-center">
+            <span className="text-[10px] tracking-[0.25em] font-mono uppercase text-[#0D5659] border-b border-[#0D5659]/30 pb-0.5">
+              OBSERVATION FILE // SS-2026
+            </span>
+            
+            <img 
+              src="/assets/brand/self-sabotage-title.png" 
+              alt="SELF SABOTAGE"
+              className="w-full max-w-xs md:max-w-sm mix-blend-multiply opacity-95 my-1"
             />
-            <div className="absolute bottom-4 left-4 right-4 flex justify-between text-[10px] font-mono text-text-dim">
-              <span>PRIMARY ARTIFACT</span>
-              <span>SELF SABOTAGE (2026)</span>
-            </div>
+            
+            <blockquote className="font-serif italic text-sm md:text-base max-w-md mt-1 text-[#041D1E]/85 border-l-2 border-[#D9878D] pl-3 py-0.5 text-left">
+              "I thought my biggest problems were the things happening to me. Then I started noticing the things I was doing to myself. This record came from there."
+            </blockquote>
           </div>
         </div>
 
-        {/* Right Column: Track Stories & Psychological Notes */}
-        <div className="lg:col-span-7 space-y-6">
-          <span className="font-mono text-xs text-flesh-400 tracking-widest-artist uppercase block">
-            [ TRACK MANIFEST & CLINICAL NOTES ]
-          </span>
-
-          <div className="space-y-4">
-            {SELF_SABOTAGE_TRACKS.map((track, index) => (
-              <article
-                key={track.id}
-                className="p-5 bg-petrol-950/70 border border-petrol-800/80 hover:border-petrol-600 transition-all rounded-sm group"
-              >
-                <div className="flex items-start justify-between gap-4 mb-2">
-                  <div className="flex items-baseline gap-3">
-                    <span className="font-mono text-xs text-text-dim">
-                      0{index + 1}
+        {/* Tracks / Evidence Spread */}
+        <div className="w-full max-w-5xl">
+          <div className="flex items-center justify-between mb-8 px-2 border-b border-[#0D5659]/40 pb-2">
+            <span className="font-mono text-xs tracking-widest text-[#D9878D]">RECORDINGS & EVIDENCE</span>
+            <span className="font-mono text-[10px] text-[#F3EBD7]/50 tracking-wider">TAP SHEET TO INSPECT</span>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 pb-16">
+            {TRACKS.map((track, i) => {
+              const isSelected = selectedTrack === track.id;
+              const isCurrentPlaying = currentTrackId === track.id && isPlaying;
+              const baseRotation = i % 3 === 0 ? '-rotate-1' : i % 3 === 1 ? 'rotate-2' : '-rotate-2';
+              
+              return (
+                <div 
+                  key={track.id}
+                  onClick={() => handleTrackClick(track)}
+                  tabIndex={0}
+                  role="button"
+                  aria-pressed={isSelected}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleTrackClick(track);
+                    }
+                  }}
+                  className={`
+                    relative bg-[#F3EBD7] text-[#041D1E] p-6 shadow-xl cursor-pointer select-none outline-none
+                    border border-[#DACBA3]
+                    ${!prefersReducedMotion && 'transition-all duration-[280ms] ease-out'}
+                    ${isSelected ? 'scale-105 z-30 -translate-y-4 rotate-0 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] ring-2 ring-[#D9878D]' : `${baseRotation} z-10 hover:z-20 hover:-translate-y-2 hover:rotate-0 hover:shadow-2xl focus-visible:ring-2 focus-visible:ring-[#D9878D]`}
+                  `}
+                >
+                  {/* Top Bar with Exhibit ID & Play status */}
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="font-mono text-[10px] text-[#0D5659]/80 uppercase tracking-widest font-semibold">
+                      ITEM {String(i + 1).padStart(2, '0')}
                     </span>
-                    <h2 className="font-serif text-lg text-text-primary group-hover:text-flesh-300 transition-colors font-medium">
-                      {track.title}
-                    </h2>
+                    <button 
+                      type="button"
+                      aria-label={isCurrentPlaying ? `Pause ${track.title}` : `Play ${track.title}`}
+                      className="w-7 h-7 rounded-full bg-[#041D1E] text-[#F3EBD7] flex items-center justify-center hover:bg-[#D9878D] hover:text-[#041D1E] transition-colors"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (currentTrackId === track.id) {
+                          togglePlay();
+                        } else {
+                          const trackObj: Track = {
+                            id: track.id,
+                            title: track.title,
+                            artist: 'ARZAEL',
+                            era: 'SELF SABOTAGE',
+                            statement: track.statement,
+                            artworkPlaceholderId: 'PLACEHOLDER_ALBUM_ART',
+                            isAvailableForPlayback: true,
+                          };
+                          playTrack(trackObj);
+                        }
+                      }}
+                    >
+                      {isCurrentPlaying ? (
+                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                      ) : (
+                        <svg className="w-3 h-3 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                      )}
+                    </button>
                   </div>
+                  
+                  {/* Title with specific track treatments */}
+                  {track.treatment === 'liar' ? (
+                    <h4 className={`font-serif font-bold text-lg tracking-wider text-[#041D1E] mb-2 transition-all ${isSelected && !prefersReducedMotion ? 'translate-x-0.5 skew-x-1' : ''}`}>
+                      {track.title}
+                    </h4>
+                  ) : (
+                    <h4 className="font-serif font-bold text-lg tracking-wider text-[#041D1E] mb-2">
+                      {track.title}
+                    </h4>
+                  )}
 
-                  <button
-                    onClick={() => playTrack(track)}
-                    aria-label={`Play ${track.title}`}
-                    className="px-3.5 py-1.5 bg-petrol-900 border border-petrol-700 text-xs font-mono tracking-wider uppercase text-petrol-200 hover:bg-petrol-800 hover:text-white flex items-center gap-1.5 transition-all cursor-pointer"
-                  >
-                    <Play className="w-3 h-3 fill-current text-flesh-400" />
-                    <span>PLAY</span>
-                  </button>
+                  {/* Track-specific physical artifact indicator */}
+                  {track.treatment === 'anesthesia' && (
+                    <div className="text-[9px] font-mono text-[#D9878D] tracking-widest uppercase mb-2 flex items-center gap-1">
+                      <span>[ANNOTATION: METAPHORICAL DOSE]</span>
+                    </div>
+                  )}
+
+                  {track.treatment === 'wait-a-minute' && (
+                    <div className="flex items-center gap-2 mb-2 text-[9px] font-mono text-[#0D5659]">
+                      <svg 
+                        className={`w-3.5 h-3.5 transition-transform duration-700 ${isSelected ? '-rotate-180' : 'rotate-0'}`} 
+                        viewBox="0 0 24 24" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        strokeWidth="2"
+                      >
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 8 10" />
+                      </svg>
+                      <span>COUNTER-CLOCKWISE RETREAT</span>
+                    </div>
+                  )}
+
+                  {track.treatment === 'car-hit' && (
+                    <div className="text-[9px] font-mono text-[#0D5659] tracking-wider mb-2">
+                      <span>[DISTURBED GLASS ARCHIVE]</span>
+                    </div>
+                  )}
+
+                  {track.treatment === 'promise-breaker' && isSelected && (
+                    <div className="border-b-2 border-dashed border-[#D9878D]/60 my-1 animate-pulse" />
+                  )}
+                  
+                  {/* Statement reveal */}
+                  <div className={`overflow-hidden transition-all duration-300 ${isSelected ? 'max-h-40 opacity-100 mt-3 pt-3 border-t border-[#041D1E]/15' : 'max-h-16 opacity-80'}`}>
+                    <p className="font-serif italic text-xs text-[#041D1E]/80 leading-relaxed">
+                      "{track.statement}"
+                    </p>
+                  </div>
                 </div>
-
-                <p className="text-sm text-flesh-300/90 italic font-sans pl-6">
-                  “{track.statement}”
-                </p>
-              </article>
-            ))}
+              );
+            })}
           </div>
         </div>
-      </div>
 
-      {/* Interactive Era Artifacts Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Profile Picture Generator Gateway Card */}
-        <section className="p-8 bg-[#040f12]/80 border border-flesh-500/40 rounded-sm flex flex-col justify-between gap-6 hover:shadow-[0_0_35px_rgba(217,126,120,0.12)] transition-shadow">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <UserCheck className="w-4 h-4 text-flesh-400" />
-              <span className="text-xs text-flesh-400 uppercase tracking-widest font-mono">
-                PROFILE IDENTITY
-              </span>
-            </div>
-            <h3 className="font-serif text-2xl sm:text-3xl text-text-primary font-normal">
-              SELF SABOTAGE AVATAR
-            </h3>
-            <p className="text-sm text-text-muted leading-relaxed font-sans">
-              We all have one. Yours just gets a profile picture. Frame your face in the ouroboros.
-            </p>
+        {/* Tucked-in Generator Artifacts */}
+        <div className="w-full max-w-4xl border-t border-[#0D5659]/50 pt-10 pb-28">
+          <div className="text-center mb-6">
+            <span className="font-mono text-xs text-[#D9878D] tracking-widest uppercase">
+              // WORKSHOP PROOFS & GENERATORS
+            </span>
           </div>
 
-          <Link
-            to="/self-sabotage/profile-picture"
-            className="px-6 py-3.5 bg-flesh-900/90 border border-flesh-500 text-xs sm:text-sm font-mono tracking-widest-artist uppercase text-flesh-200 hover:bg-flesh-800 hover:text-white transition-all flesh-glow self-start flex items-center gap-2 font-medium"
-          >
-            <span>PICK YOUR PROBLEM</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </section>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Life Stevia: Folded Poster Proof */}
+            <Link 
+              to="/self-sabotage/life-stevia"
+              className="group relative bg-[#F3EBD7] text-[#041D1E] p-6 shadow-xl border border-[#DACBA3] rotate-[-1deg] hover:rotate-0 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 flex flex-col justify-between"
+            >
+              <div className="absolute top-2 right-2 px-2 py-0.5 bg-[#D9878D] text-[#041D1E] font-mono text-[9px] uppercase tracking-wider font-bold">
+                FOLDED PROOF
+              </div>
+              <div>
+                <span className="font-mono text-[10px] text-[#0D5659] block uppercase tracking-widest mb-1">EXHIBIT A</span>
+                <h4 className="font-serif font-bold text-xl tracking-wider mb-2">LIFE STEVIA POSTER GENERATOR</h4>
+                <p className="font-serif italic text-xs text-[#041D1E]/75 leading-relaxed">
+                  Generate your custom lyric & clinical aesthetic poster print.
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-[#041D1E]/10 flex items-center justify-between text-xs font-mono font-bold tracking-wider text-[#0D5659] group-hover:text-[#D9878D]">
+                <span>UNFOLD PROOF</span>
+                <span>→</span>
+              </div>
+            </Link>
 
-        {/* Life Stevia Gateway Card */}
-        <section className="p-8 bg-[#040f12]/80 border border-petrol-700/80 hover:border-petrol-500 rounded-sm flex flex-col justify-between gap-6 transition-colors">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-petrol-400" />
-              <span className="text-xs text-petrol-400 uppercase tracking-widest font-mono">
-                POSTER ARTIFACT
-              </span>
-            </div>
-            <h3 className="font-serif text-2xl sm:text-3xl text-text-primary font-normal">
-              LIFE STEVIA
-            </h3>
-            <p className="text-sm text-text-muted leading-relaxed font-sans">
-              The person who keeps loving you anyway. Type their name before you run out of them.
-            </p>
+            {/* Profile Picture Generator: Photo Booth Strip */}
+            <Link 
+              to="/self-sabotage/profile-picture"
+              className="group relative bg-[#072C2E] text-[#F3EBD7] p-6 shadow-xl border border-[#0D5659] rotate-[1.5deg] hover:rotate-0 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300 flex flex-col justify-between"
+            >
+              <div className="absolute top-2 right-2 px-2 py-0.5 bg-[#0D5659] text-[#F3EBD7] font-mono text-[9px] uppercase tracking-wider">
+                OUROBOROS FRAME
+              </div>
+              <div>
+                <span className="font-mono text-[10px] text-[#D9878D] block uppercase tracking-widest mb-1">EXHIBIT B</span>
+                <h4 className="font-serif font-bold text-xl tracking-wider mb-2 text-[#F3EBD7]">PFP / AVATAR GENERATOR</h4>
+                <p className="font-serif italic text-xs text-[#F3EBD7]/70 leading-relaxed">
+                  Frame yourself inside the cyclical ouroboros mark.
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t border-[#0D5659] flex items-center justify-between text-xs font-mono font-bold tracking-wider text-[#D9878D] group-hover:text-[#F3EBD7]">
+                <span>ENTER PHOTO BOOTH</span>
+                <span>→</span>
+              </div>
+            </Link>
           </div>
+        </div>
 
-          <Link
-            to="/self-sabotage/life-stevia"
-            className="px-6 py-3.5 bg-petrol-900 border border-petrol-600 text-xs sm:text-sm font-mono tracking-widest-artist uppercase text-petrol-200 hover:bg-petrol-800 hover:text-white transition-all self-start flex items-center gap-2 font-medium"
-          >
-            <span>MAKE YOUR LIFE STEVIA POSTER</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </section>
-      </div>
       </div>
     </div>
   );
