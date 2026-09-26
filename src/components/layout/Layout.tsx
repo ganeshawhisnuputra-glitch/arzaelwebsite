@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { PrimaryNavigation } from './PrimaryNavigation';
 import { MobileNavigation } from './MobileNavigation';
 import { Footer } from './Footer';
@@ -8,20 +8,24 @@ import { LettersModal } from '../letters/LettersModal';
 
 export const Layout: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const isHomepage = location.pathname === '/';
 
   return (
     <div className="min-h-screen flex flex-col bg-[#041D1E] text-beige-100 selection:bg-flesh-500/30 selection:text-beige-100 relative">
-      {/* Navigation Header */}
-      <PrimaryNavigation onOpenMobileMenu={() => setMobileMenuOpen(true)} />
-
-      {/* Mobile Drawer Menu */}
-      <MobileNavigation
-        isOpen={mobileMenuOpen}
-        onClose={() => setMobileMenuOpen(false)}
-      />
+      {/* Navigation Header — hidden on homepage (it has its own overlay) */}
+      {!isHomepage && (
+        <>
+          <PrimaryNavigation onOpenMobileMenu={() => setMobileMenuOpen(true)} />
+          <MobileNavigation
+            isOpen={mobileMenuOpen}
+            onClose={() => setMobileMenuOpen(false)}
+          />
+        </>
+      )}
 
       {/* Main Page Body (Routes render here) */}
-      <main className="flex-1 w-full flex flex-col relative z-10">
+      <main className={`flex-1 w-full flex flex-col ${isHomepage ? '' : 'relative z-10'}`}>
         <Outlet />
       </main>
 
@@ -31,8 +35,8 @@ export const Layout: React.FC = () => {
       {/* Letters Modal */}
       <LettersModal />
 
-      {/* Global Footer */}
-      <Footer />
+      {/* Global Footer — hidden on homepage (single viewport) */}
+      {!isHomepage && <Footer />}
     </div>
   );
 };

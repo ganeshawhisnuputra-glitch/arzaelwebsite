@@ -12,5 +12,8 @@ export default defineConfig({
   server: {
     port: 3000,
     open: false,
+    watch: {
+      ignored: ['**/*.mov', '**/*.mp4', '**/05_VIDEO/**'],
+    },
   }
 })
