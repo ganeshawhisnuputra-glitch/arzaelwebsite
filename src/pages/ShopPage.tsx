@@ -25,10 +25,11 @@ export const ShopPage: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-24 animate-fade-in relative">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-24 animate-fade-in relative overflow-hidden">
       {/* Environmental Backdrop */}
       <AtmosphericBackground variant="shop" overlayOpacity="deep" />
 
+      <div className="relative z-10">
       {/* Header & Opening Statement */}
       <div className="max-w-3xl mb-12 space-y-3">
         <span className="font-mono text-xs text-flesh-400 tracking-widest-artist uppercase block">
@@ -137,6 +138,7 @@ export const ShopPage: React.FC = () => {
             </div>
           </article>
         ))}
+      </div>
       </div>
     </div>
   );

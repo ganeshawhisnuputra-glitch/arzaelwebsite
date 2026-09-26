@@ -3,10 +3,11 @@ import { AtmosphericBackground } from '../components/common/AtmosphericBackgroun
 
 export const AboutPage: React.FC = () => {
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-24 animate-fade-in relative">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-24 animate-fade-in relative overflow-hidden">
       {/* Environmental Backdrop */}
-      <AtmosphericBackground variant="hospital-ward" overlayOpacity="deep" />
+      <AtmosphericBackground variant="about" overlayOpacity="deep" />
 
+      <div className="relative z-10">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
         {/* Left: Authentic Editorial Portrait Frame */}
         <div className="lg:col-span-5 space-y-6">
@@ -94,6 +95,7 @@ export const AboutPage: React.FC = () => {
             </span>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

@@ -9,10 +9,11 @@ export const SelfSabotagePage: React.FC = () => {
   const { playTrack } = useAudio();
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-20 animate-fade-in relative">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-20 animate-fade-in relative overflow-hidden">
       {/* Environmental Corridor Backdrop */}
-      <AtmosphericBackground variant="hospital-hall" overlayOpacity="deep" />
+      <AtmosphericBackground variant="hospital-ward" overlayOpacity="deep" />
 
+      <div className="relative z-10">
       {/* Header & Clinical Admission Statement */}
       <div className="max-w-3xl mb-16 space-y-6">
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-petrol-950/90 border border-petrol-700/60 text-xs font-mono tracking-widest text-flesh-300 uppercase">
@@ -150,6 +151,7 @@ export const SelfSabotagePage: React.FC = () => {
             <ArrowRight className="w-4 h-4" />
           </Link>
         </section>
+      </div>
       </div>
     </div>
   );

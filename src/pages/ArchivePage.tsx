@@ -7,10 +7,11 @@ import { ArrowRight } from 'lucide-react';
 
 export const ArchivePage: React.FC = () => {
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-24 animate-fade-in relative">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-24 animate-fade-in relative overflow-hidden">
       {/* Environmental Backdrop */}
       <AtmosphericBackground variant="archive" overlayOpacity="deep" />
 
+      <div className="relative z-10">
       <div className="max-w-2xl mb-16 space-y-4">
         <span className="font-mono text-xs text-flesh-400 tracking-widest-artist uppercase block">
           [ ERA CHRONOLOGY ]
@@ -68,6 +69,7 @@ export const ArchivePage: React.FC = () => {
             </div>
           </div>
         ))}
+      </div>
       </div>
     </div>
   );

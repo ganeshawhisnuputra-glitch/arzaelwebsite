@@ -13,9 +13,11 @@ export const LettersPage: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 animate-fade-in flex flex-col items-center space-y-20 relative">
+    <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 animate-fade-in flex flex-col items-center space-y-20 relative overflow-hidden">
       {/* Intimate environmental backdrop */}
-      <AtmosphericBackground variant="hospital-ward" overlayOpacity="deep" />
+      <AtmosphericBackground variant="letters" overlayOpacity="deep" />
+
+      <div className="relative z-10 w-full flex flex-col items-center space-y-20">
 
       {/* 1. Direct Correspondence (Letters) */}
       <div className="w-full max-w-3xl flex flex-col items-center text-center">
@@ -96,6 +98,7 @@ export const LettersPage: React.FC = () => {
       {/* 2. Distinctive Community Channels (Meme Pack + House of Zaelion) */}
       <div className="w-full pt-10 border-t border-petrol-800/80">
         <CommunitySection />
+      </div>
       </div>
     </div>
   );

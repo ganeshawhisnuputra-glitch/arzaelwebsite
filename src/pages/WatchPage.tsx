@@ -8,10 +8,11 @@ export const WatchPage: React.FC = () => {
   const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-24 animate-fade-in relative">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-24 animate-fade-in relative overflow-hidden">
       {/* Environmental Backdrop */}
       <AtmosphericBackground variant="watch" overlayOpacity="deep" />
 
+      <div className="relative z-10">
       <div className="max-w-2xl mb-14 space-y-3">
         <span className="font-mono text-xs text-flesh-400 tracking-widest-artist uppercase block">
           [ VISUAL CINEMA ]
@@ -94,6 +95,7 @@ export const WatchPage: React.FC = () => {
         <p className="font-mono text-xs text-text-muted tracking-wider uppercase">
           More films and visualizers are being cut in the dark.
         </p>
+      </div>
       </div>
     </div>
   );
