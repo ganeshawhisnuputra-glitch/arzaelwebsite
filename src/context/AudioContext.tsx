@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useRef, useEffect } from 'react';
+import React, { createContext, useContext, useState, useRef, useEffect, useCallback } from 'react';
 import { Track, AudioPlayerState } from '../types/music';
 import { SELF_SABOTAGE_TRACKS } from '../data/selfSabotageEra';
 
@@ -12,18 +12,21 @@ interface AudioContextType {
   toggleMute: () => void;
   nextTrack: () => void;
   prevTrack: () => void;
+  isSpotifyPowered: boolean;
+  spotifyArtistUrl: string;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
 
+export const SPOTIFY_ARTIST_URL = "https://open.spotify.com/artist/5Z1BQaKqJf7FhvaEWC2vOR?si=vdqtGkXvTye5ehe0bHMN7w";
+
 export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Default to first track queued in stopped/paused state (strictly ZERO autoplay)
   const [state, setState] = useState<AudioPlayerState>({
     currentTrack: SELF_SABOTAGE_TRACKS[0] || null,
     isPlaying: false,
     progress: 0,
     currentTime: 0,
-    duration: 222, // 3:42 simulated duration for demonstration
+    duration: 222,
     volume: 0.8,
     isMuted: false,
     isLoading: false,
@@ -32,7 +35,25 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const timerRef = useRef<number | null>(null);
 
-  // Simulated continuous progress ticker when audio is simulated in V0
+  // Listen to global events: e.g. when YouTube starts playing, pause site audio
+  useEffect(() => {
+    const handlePauseAudio = () => {
+      setState((prev) => ({ ...prev, isPlaying: false }));
+    };
+    window.addEventListener('arzael:pause-site-audio', handlePauseAudio);
+    return () => {
+      window.removeEventListener('arzael:pause-site-audio', handlePauseAudio);
+    };
+  }, []);
+
+  // When audio starts playing, notify any active YouTube player to pause
+  useEffect(() => {
+    if (state.isPlaying) {
+      window.dispatchEvent(new CustomEvent('arzael:pause-youtube-video'));
+    }
+  }, [state.isPlaying]);
+
+  // Simulated progress timer when playing
   useEffect(() => {
     if (state.isPlaying) {
       timerRef.current = window.setInterval(() => {
@@ -56,7 +77,10 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     };
   }, [state.isPlaying]);
 
-  const playTrack = (track: Track) => {
+  const playTrack = useCallback((track: Track) => {
+    // Notify YouTube player to pause
+    window.dispatchEvent(new CustomEvent('arzael:pause-youtube-video'));
+
     setState((prev) => ({
       ...prev,
       currentTrack: track,
@@ -65,20 +89,26 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       progress: 0,
       error: null,
     }));
-  };
+  }, []);
 
-  const togglePlay = () => {
-    setState((prev) => ({
-      ...prev,
-      isPlaying: !prev.isPlaying,
-    }));
-  };
+  const togglePlay = useCallback(() => {
+    setState((prev) => {
+      const willPlay = !prev.isPlaying;
+      if (willPlay) {
+        window.dispatchEvent(new CustomEvent('arzael:pause-youtube-video'));
+      }
+      return {
+        ...prev,
+        isPlaying: willPlay,
+      };
+    });
+  }, []);
 
-  const pause = () => {
+  const pause = useCallback(() => {
     setState((prev) => ({ ...prev, isPlaying: false }));
-  };
+  }, []);
 
-  const seek = (progressPercent: number) => {
+  const seek = useCallback((progressPercent: number) => {
     setState((prev) => {
       const clamped = Math.max(0, Math.min(100, progressPercent));
       const targetTime = (clamped / 100) * prev.duration;
@@ -88,29 +118,29 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         currentTime: targetTime,
       };
     });
-  };
+  }, []);
 
-  const setVolume = (vol: number) => {
+  const setVolume = useCallback((vol: number) => {
     setState((prev) => ({ ...prev, volume: Math.max(0, Math.min(1, vol)) }));
-  };
+  }, []);
 
-  const toggleMute = () => {
+  const toggleMute = useCallback(() => {
     setState((prev) => ({ ...prev, isMuted: !prev.isMuted }));
-  };
+  }, []);
 
-  const nextTrack = () => {
+  const nextTrack = useCallback(() => {
     if (!state.currentTrack) return;
     const currentIndex = SELF_SABOTAGE_TRACKS.findIndex((t) => t.id === state.currentTrack?.id);
     const nextIndex = (currentIndex + 1) % SELF_SABOTAGE_TRACKS.length;
     playTrack(SELF_SABOTAGE_TRACKS[nextIndex]);
-  };
+  }, [state.currentTrack, playTrack]);
 
-  const prevTrack = () => {
+  const prevTrack = useCallback(() => {
     if (!state.currentTrack) return;
     const currentIndex = SELF_SABOTAGE_TRACKS.findIndex((t) => t.id === state.currentTrack?.id);
     const prevIndex = (currentIndex - 1 + SELF_SABOTAGE_TRACKS.length) % SELF_SABOTAGE_TRACKS.length;
     playTrack(SELF_SABOTAGE_TRACKS[prevIndex]);
-  };
+  }, [state.currentTrack, playTrack]);
 
   return (
     <AudioContext.Provider
@@ -124,6 +154,8 @@ export const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         toggleMute,
         nextTrack,
         prevTrack,
+        isSpotifyPowered: true,
+        spotifyArtistUrl: SPOTIFY_ARTIST_URL,
       }}
     >
       {children}

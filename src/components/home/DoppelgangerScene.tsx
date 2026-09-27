@@ -93,15 +93,13 @@ export const DoppelgangerScene: React.FC<DoppelgangerSceneProps> = ({ className 
 
       {/* 3. Atmospheric gradients for readability */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Bottom gradient for case files */}
-        <div className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-[#020708]/90 via-[#020708]/40 to-transparent" />
+        {/* Soft lower gradient only where needed for label readability (bottom 28%) */}
+        <div className="absolute inset-x-0 bottom-0 h-[28%] bg-gradient-to-t from-[#020708]/85 via-[#020708]/30 to-transparent" />
         {/* Top subtle vignette */}
-        <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-[#020708]/60 to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#020708]/50 to-transparent" />
         {/* Side vignettes */}
-        <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#020708]/40 to-transparent" />
-        <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#020708]/40 to-transparent" />
-        {/* Subtle teal tint */}
-        <div className="absolute inset-0 bg-[#0D5659]/8 mix-blend-color" />
+        <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-[#020708]/30 to-transparent" />
+        <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-[#020708]/30 to-transparent" />
       </div>
 
       {/* 4. Motion control */}

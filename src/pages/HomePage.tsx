@@ -74,7 +74,7 @@ export const HomePage: React.FC = () => {
       </header>
 
       {/* 3. Case-file organizer — bottom of viewport */}
-      <div className="absolute bottom-14 sm:bottom-16 inset-x-0 z-10 animate-fade-in max-h-[60vh] sm:max-h-[50vh] md:max-h-none overflow-y-auto overflow-x-hidden">
+      <div className="absolute bottom-14 sm:bottom-16 inset-x-0 z-10 animate-fade-in max-h-[45vh] sm:max-h-[40vh] md:max-h-none overflow-y-auto overflow-x-hidden">
         <CaseFileOrganizer />
       </div>
 
