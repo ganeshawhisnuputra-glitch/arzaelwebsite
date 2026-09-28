@@ -1,23 +1,21 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 interface DoppelgangerSceneProps {
   className?: string;
 }
 
 export const DoppelgangerScene: React.FC<DoppelgangerSceneProps> = ({ className = '' }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const [hasLoaded, setHasLoaded] = useState(false);
-  const [autoplayBlocked, setAutoplayBlocked] = useState(false);
-  const prefersReducedMotion = useRef(
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  );
+  const prefersReducedMotion = useReducedMotion();
 
-  // Attempt autoplay on mount
+  // Attempt autoplay on mount (only if reduced motion is false)
   useEffect(() => {
-    if (prefersReducedMotion.current) {
+    if (prefersReducedMotion) {
       setIsPlaying(false);
-      setAutoplayBlocked(true);
       return;
     }
 
@@ -28,18 +26,19 @@ export const DoppelgangerScene: React.FC<DoppelgangerSceneProps> = ({ className 
     const playPromise = video.play();
     if (playPromise !== undefined) {
       playPromise
-        .then(() => setIsPlaying(true))
+        .then(() => {
+          setIsPlaying(true);
+        })
         .catch(() => {
           setIsPlaying(false);
-          setAutoplayBlocked(true);
         });
     }
-  }, []);
+  }, [prefersReducedMotion]);
 
-  // Pause when tab hidden or navigating away
+  // Pause when tab hidden or scene is off-screen
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
+    if (!video || prefersReducedMotion) return;
 
     const handleVisibility = () => {
       if (document.hidden) {
@@ -49,9 +48,29 @@ export const DoppelgangerScene: React.FC<DoppelgangerSceneProps> = ({ className 
       }
     };
 
+    // IntersectionObserver to pause when off-screen
+    let observer: IntersectionObserver | null = null;
+    if (containerRef.current && typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(
+        (entries) => {
+          const entry = entries[0];
+          if (!entry.isIntersecting) {
+            video.pause();
+          } else if (isPlaying && !document.hidden) {
+            video.play().catch(() => {});
+          }
+        },
+        { threshold: 0.1 }
+      );
+      observer.observe(containerRef.current);
+    }
+
     document.addEventListener('visibilitychange', handleVisibility);
-    return () => document.removeEventListener('visibilitychange', handleVisibility);
-  }, [isPlaying]);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibility);
+      if (observer) observer.disconnect();
+    };
+  }, [isPlaying, prefersReducedMotion]);
 
   const toggleMotion = useCallback(() => {
     const video = videoRef.current;
@@ -61,37 +80,46 @@ export const DoppelgangerScene: React.FC<DoppelgangerSceneProps> = ({ className 
       video.pause();
       setIsPlaying(false);
     } else {
-      video.play().then(() => setIsPlaying(true)).catch(() => {});
+      video.play().then(() => {
+        setIsPlaying(true);
+      }).catch(() => {});
     }
   }, [isPlaying]);
 
   return (
-    <div className={`absolute inset-0 overflow-hidden ${className}`}>
-      {/* 1. Immediate poster fallback — always visible */}
+    <div 
+      ref={containerRef}
+      className={`absolute inset-0 overflow-hidden ${className}`}
+    >
+      {/* 1. Sharp representative poster fallback from the exact video */}
       <div
-        className="absolute inset-0 bg-[#041D1E]"
+        className="absolute inset-0 bg-[#041D1E] transition-opacity duration-700"
         style={{
-          backgroundImage: "url('/assets/environments/corridor.jpg')",
+          backgroundImage: "url('/assets/video/doppelganger-poster.jpg')",
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundPosition: 'center 35%',
         }}
+        aria-hidden="true"
       />
 
-      {/* 2. Video layer */}
-      <video
-        ref={videoRef}
-        src="/assets/video/doppelganger.mov"
-        muted
-        loop
-        playsInline
-        preload="auto"
-        onLoadedData={() => setHasLoaded(true)}
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-          hasLoaded ? 'opacity-100' : 'opacity-0'
-        }`}
-      />
+      {/* 2. Video layer (disabled under reduced motion) */}
+      {!prefersReducedMotion && (
+        <video
+          ref={videoRef}
+          src="/assets/video/doppelganger.mp4"
+          poster="/assets/video/doppelganger-poster.jpg"
+          muted
+          loop
+          playsInline
+          preload="auto"
+          onLoadedData={() => setHasLoaded(true)}
+          className={`absolute inset-0 w-full h-full object-cover object-center sm:object-[center_35%] transition-opacity duration-1000 ${
+            hasLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+      )}
 
-      {/* 3. Atmospheric gradients for readability */}
+      {/* 3. Atmospheric gradients for readability — preserves upper 65% for faces, mirror & lamp */}
       <div className="absolute inset-0 pointer-events-none">
         {/* Soft lower gradient only where needed for label readability (bottom 28%) */}
         <div className="absolute inset-x-0 bottom-0 h-[28%] bg-gradient-to-t from-[#020708]/85 via-[#020708]/30 to-transparent" />
@@ -102,36 +130,23 @@ export const DoppelgangerScene: React.FC<DoppelgangerSceneProps> = ({ className 
         <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-[#020708]/30 to-transparent" />
       </div>
 
-      {/* 4. Motion control */}
-      <button
-        onClick={toggleMotion}
-        aria-label={isPlaying ? 'Pause background video' : 'Play background video'}
-        className="absolute top-5 right-5 z-30 w-9 h-9 flex items-center justify-center rounded-full bg-[#020708]/60 backdrop-blur-sm border border-[#0D5659]/40 text-beige-100/60 hover:text-beige-100 hover:border-flesh-500/50 transition-all cursor-pointer"
-      >
-        {isPlaying ? (
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-            <rect x="1" y="1" width="3.5" height="10" rx="0.5" />
-            <rect x="7.5" y="1" width="3.5" height="10" rx="0.5" />
-          </svg>
-        ) : (
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-            <polygon points="2,0 12,6 2,12" />
-          </svg>
-        )}
-      </button>
-
-      {/* Autoplay blocked: show explicit play prompt */}
-      {autoplayBlocked && !isPlaying && (
+      {/* 4. Motion control button (only show when not permanently in reduced-motion) */}
+      {!prefersReducedMotion && (
         <button
           onClick={toggleMotion}
-          className="absolute inset-0 z-20 flex items-center justify-center cursor-pointer bg-transparent"
-          aria-label="Play background scene"
+          aria-label={isPlaying ? 'Pause background video' : 'Play background video'}
+          className="absolute top-5 right-5 z-30 w-9 h-9 flex items-center justify-center rounded-full bg-[#020708]/60 backdrop-blur-sm border border-[#0D5659]/40 text-beige-100/60 hover:text-beige-100 hover:border-flesh-500/50 transition-all cursor-pointer"
         >
-          <div className="w-16 h-16 rounded-full bg-[#020708]/70 backdrop-blur-sm border border-beige-100/20 flex items-center justify-center hover:border-flesh-500/60 transition-all">
-            <svg width="20" height="20" viewBox="0 0 12 12" fill="currentColor" className="text-beige-100/80 ml-0.5">
+          {isPlaying ? (
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+              <rect x="1" y="1" width="3.5" height="10" rx="0.5" />
+              <rect x="7.5" y="1" width="3.5" height="10" rx="0.5" />
+            </svg>
+          ) : (
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
               <polygon points="2,0 12,6 2,12" />
             </svg>
-          </div>
+          )}
         </button>
       )}
     </div>
