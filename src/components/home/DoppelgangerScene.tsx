@@ -8,14 +8,14 @@ interface DoppelgangerSceneProps {
 export const DoppelgangerScene: React.FC<DoppelgangerSceneProps> = ({ className = '' }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [hasLoaded, setHasLoaded] = useState(false);
+  const [isPlayingVideo, setIsPlayingVideo] = useState(false);
+  const [hasVideoError, setHasVideoError] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
-  // Attempt autoplay on mount (only if reduced motion is false)
+  // Attempt autoplay on mount when reduced motion is not active
   useEffect(() => {
     if (prefersReducedMotion) {
-      setIsPlaying(false);
+      setIsPlayingVideo(false);
       return;
     }
 
@@ -27,15 +27,16 @@ export const DoppelgangerScene: React.FC<DoppelgangerSceneProps> = ({ className 
     if (playPromise !== undefined) {
       playPromise
         .then(() => {
-          setIsPlaying(true);
+          // Video started playing successfully
         })
         .catch(() => {
-          setIsPlaying(false);
+          // Autoplay was prevented by browser policy; fallback to poster
+          setIsPlayingVideo(false);
         });
     }
   }, [prefersReducedMotion]);
 
-  // Pause when tab hidden or scene is off-screen
+  // Pause when tab is hidden or scene is off-screen
   useEffect(() => {
     const video = videoRef.current;
     if (!video || prefersReducedMotion) return;
@@ -43,7 +44,8 @@ export const DoppelgangerScene: React.FC<DoppelgangerSceneProps> = ({ className 
     const handleVisibility = () => {
       if (document.hidden) {
         video.pause();
-      } else if (isPlaying) {
+        setIsPlayingVideo(false);
+      } else {
         video.play().catch(() => {});
       }
     };
@@ -56,7 +58,8 @@ export const DoppelgangerScene: React.FC<DoppelgangerSceneProps> = ({ className 
           const entry = entries[0];
           if (!entry.isIntersecting) {
             video.pause();
-          } else if (isPlaying && !document.hidden) {
+            setIsPlayingVideo(false);
+          } else if (!document.hidden) {
             video.play().catch(() => {});
           }
         },
@@ -70,30 +73,33 @@ export const DoppelgangerScene: React.FC<DoppelgangerSceneProps> = ({ className 
       document.removeEventListener('visibilitychange', handleVisibility);
       if (observer) observer.disconnect();
     };
-  }, [isPlaying, prefersReducedMotion]);
+  }, [prefersReducedMotion]);
 
   const toggleMotion = useCallback(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    if (isPlaying) {
+    if (isPlayingVideo) {
       video.pause();
-      setIsPlaying(false);
+      setIsPlayingVideo(false);
     } else {
-      video.play().then(() => {
-        setIsPlaying(true);
-      }).catch(() => {});
+      video.play().catch(() => {});
     }
-  }, [isPlaying]);
+  }, [isPlayingVideo]);
+
+  // Poster is visible during loading, when reduced motion is requested, on error, or when video hasn't played
+  const showPoster = !isPlayingVideo || prefersReducedMotion || hasVideoError;
 
   return (
     <div 
       ref={containerRef}
       className={`absolute inset-0 overflow-hidden ${className}`}
     >
-      {/* 1. Sharp representative poster fallback from the exact video */}
+      {/* 1. Sharp representative poster fallback from the exact video (loading, reduced-motion, error fallback) */}
       <div
-        className="absolute inset-0 bg-[#041D1E] transition-opacity duration-700"
+        className={`absolute inset-0 bg-[#041D1E] transition-opacity duration-700 pointer-events-none z-0 ${
+          showPoster ? 'opacity-100' : 'opacity-0'
+        }`}
         style={{
           backgroundImage: "url('/assets/video/doppelganger-poster.jpg')",
           backgroundSize: 'cover',
@@ -102,25 +108,34 @@ export const DoppelgangerScene: React.FC<DoppelgangerSceneProps> = ({ className 
         aria-hidden="true"
       />
 
-      {/* 2. Video layer (disabled under reduced motion) */}
+      {/* 2. Video layer with genuine MP4 (disabled under reduced motion) */}
       {!prefersReducedMotion && (
         <video
           ref={videoRef}
           src="/assets/video/doppelganger.mp4"
           poster="/assets/video/doppelganger-poster.jpg"
           muted
+          autoPlay
           loop
           playsInline
           preload="auto"
-          onLoadedData={() => setHasLoaded(true)}
-          className={`absolute inset-0 w-full h-full object-cover object-center sm:object-[center_35%] transition-opacity duration-1000 ${
-            hasLoaded ? 'opacity-100' : 'opacity-0'
+          onPlaying={() => {
+            setIsPlayingVideo(true);
+            setHasVideoError(false);
+          }}
+          onPause={() => setIsPlayingVideo(false)}
+          onError={() => {
+            setHasVideoError(true);
+            setIsPlayingVideo(false);
+          }}
+          className={`absolute inset-0 w-full h-full object-cover object-center sm:object-[center_35%] transition-opacity duration-700 z-0 ${
+            isPlayingVideo ? 'opacity-100' : 'opacity-0'
           }`}
         />
       )}
 
       {/* 3. Atmospheric gradients for readability — preserves upper 65% for faces, mirror & lamp */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none z-10">
         {/* Soft lower gradient only where needed for label readability (bottom 28%) */}
         <div className="absolute inset-x-0 bottom-0 h-[28%] bg-gradient-to-t from-[#020708]/85 via-[#020708]/30 to-transparent" />
         {/* Top subtle vignette */}
@@ -134,10 +149,10 @@ export const DoppelgangerScene: React.FC<DoppelgangerSceneProps> = ({ className 
       {!prefersReducedMotion && (
         <button
           onClick={toggleMotion}
-          aria-label={isPlaying ? 'Pause background video' : 'Play background video'}
+          aria-label={isPlayingVideo ? 'Pause background video' : 'Play background video'}
           className="absolute top-5 right-5 z-30 w-9 h-9 flex items-center justify-center rounded-full bg-[#020708]/60 backdrop-blur-sm border border-[#0D5659]/40 text-beige-100/60 hover:text-beige-100 hover:border-flesh-500/50 transition-all cursor-pointer"
         >
-          {isPlaying ? (
+          {isPlayingVideo ? (
             <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
               <rect x="1" y="1" width="3.5" height="10" rx="0.5" />
               <rect x="7.5" y="1" width="3.5" height="10" rx="0.5" />
