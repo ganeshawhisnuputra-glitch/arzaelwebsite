@@ -8,14 +8,15 @@ interface DoppelgangerSceneProps {
 export const DoppelgangerScene: React.FC<DoppelgangerSceneProps> = ({ className = '' }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlayingVideo, setIsPlayingVideo] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
   const [hasVideoError, setHasVideoError] = useState(false);
   const prefersReducedMotion = useReducedMotion();
 
   // Attempt autoplay on mount when reduced motion is not active
   useEffect(() => {
     if (prefersReducedMotion) {
-      setIsPlayingVideo(false);
+      setIsPlaying(false);
       return;
     }
 
@@ -27,30 +28,33 @@ export const DoppelgangerScene: React.FC<DoppelgangerSceneProps> = ({ className 
     if (playPromise !== undefined) {
       playPromise
         .then(() => {
-          // Video started playing successfully
+          setIsPlaying(true);
         })
         .catch(() => {
-          // Autoplay was prevented by browser policy; fallback to poster
-          setIsPlayingVideo(false);
+          // If browser policy delays autoplay until gesture, poster remains visible
+          setIsPlaying(false);
         });
     }
   }, [prefersReducedMotion]);
 
-  // Pause when tab is hidden or scene is off-screen
+  // Tab visibility and off-screen pause handling
   useEffect(() => {
     const video = videoRef.current;
     if (!video || prefersReducedMotion) return;
 
-    const handleVisibility = () => {
+    const handleVisibilityChange = () => {
       if (document.hidden) {
         video.pause();
-        setIsPlayingVideo(false);
+        setIsPlaying(false);
       } else {
-        video.play().catch(() => {});
+        // Tab is active again: resume playback if container is visible
+        video.play().then(() => {
+          setIsPlaying(true);
+        }).catch(() => {});
       }
     };
 
-    // IntersectionObserver to pause when off-screen
+    // IntersectionObserver to pause only when completely off-screen
     let observer: IntersectionObserver | null = null;
     if (containerRef.current && typeof IntersectionObserver !== 'undefined') {
       observer = new IntersectionObserver(
@@ -58,19 +62,21 @@ export const DoppelgangerScene: React.FC<DoppelgangerSceneProps> = ({ className 
           const entry = entries[0];
           if (!entry.isIntersecting) {
             video.pause();
-            setIsPlayingVideo(false);
+            setIsPlaying(false);
           } else if (!document.hidden) {
-            video.play().catch(() => {});
+            video.play().then(() => {
+              setIsPlaying(true);
+            }).catch(() => {});
           }
         },
-        { threshold: 0.1 }
+        { threshold: 0 }
       );
       observer.observe(containerRef.current);
     }
 
-    document.addEventListener('visibilitychange', handleVisibility);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibility);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       if (observer) observer.disconnect();
     };
   }, [prefersReducedMotion]);
@@ -79,23 +85,26 @@ export const DoppelgangerScene: React.FC<DoppelgangerSceneProps> = ({ className 
     const video = videoRef.current;
     if (!video) return;
 
-    if (isPlayingVideo) {
+    if (isPlaying) {
       video.pause();
-      setIsPlayingVideo(false);
+      setIsPlaying(false);
     } else {
-      video.play().catch(() => {});
+      video.play().then(() => {
+        setIsPlaying(true);
+      }).catch(() => {});
     }
-  }, [isPlayingVideo]);
+  }, [isPlaying]);
 
-  // Poster is visible during loading, when reduced motion is requested, on error, or when video hasn't played
-  const showPoster = !isPlayingVideo || prefersReducedMotion || hasVideoError;
+  // Poster is visible during initial load, when reduced motion is requested, on error,
+  // and is hidden ONLY after the video successfully fires the playing event
+  const showPoster = !hasStartedPlaying || prefersReducedMotion || hasVideoError;
 
   return (
     <div 
       ref={containerRef}
       className={`absolute inset-0 overflow-hidden ${className}`}
     >
-      {/* 1. Sharp representative poster fallback from the exact video (loading, reduced-motion, error fallback) */}
+      {/* 1. Sharp representative poster fallback — displayed during loading, reduced-motion, or error */}
       <div
         className={`absolute inset-0 bg-[#041D1E] transition-opacity duration-700 pointer-events-none z-0 ${
           showPoster ? 'opacity-100' : 'opacity-0'
@@ -108,9 +117,10 @@ export const DoppelgangerScene: React.FC<DoppelgangerSceneProps> = ({ className 
         aria-hidden="true"
       />
 
-      {/* 2. Video layer with genuine MP4 (disabled under reduced motion) */}
+      {/* 2. Genuine MP4 video element */}
       {!prefersReducedMotion && (
         <video
+          id="hero-video"
           ref={videoRef}
           src="/assets/video/doppelganger.mp4"
           poster="/assets/video/doppelganger-poster.jpg"
@@ -120,16 +130,19 @@ export const DoppelgangerScene: React.FC<DoppelgangerSceneProps> = ({ className 
           playsInline
           preload="auto"
           onPlaying={() => {
-            setIsPlayingVideo(true);
+            setHasStartedPlaying(true);
+            setIsPlaying(true);
             setHasVideoError(false);
           }}
-          onPause={() => setIsPlayingVideo(false)}
+          onPause={() => {
+            setIsPlaying(false);
+          }}
           onError={() => {
             setHasVideoError(true);
-            setIsPlayingVideo(false);
+            setIsPlaying(false);
           }}
           className={`absolute inset-0 w-full h-full object-cover object-center sm:object-[center_35%] transition-opacity duration-700 z-0 ${
-            isPlayingVideo ? 'opacity-100' : 'opacity-0'
+            hasStartedPlaying ? 'opacity-100' : 'opacity-0'
           }`}
         />
       )}
@@ -149,10 +162,10 @@ export const DoppelgangerScene: React.FC<DoppelgangerSceneProps> = ({ className 
       {!prefersReducedMotion && (
         <button
           onClick={toggleMotion}
-          aria-label={isPlayingVideo ? 'Pause background video' : 'Play background video'}
+          aria-label={isPlaying ? 'Pause background video' : 'Play background video'}
           className="absolute top-5 right-5 z-30 w-9 h-9 flex items-center justify-center rounded-full bg-[#020708]/60 backdrop-blur-sm border border-[#0D5659]/40 text-beige-100/60 hover:text-beige-100 hover:border-flesh-500/50 transition-all cursor-pointer"
         >
-          {isPlayingVideo ? (
+          {isPlaying ? (
             <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
               <rect x="1" y="1" width="3.5" height="10" rx="0.5" />
               <rect x="7.5" y="1" width="3.5" height="10" rx="0.5" />
