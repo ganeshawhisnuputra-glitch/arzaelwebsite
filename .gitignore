@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local video assets & test screenshots
+05_VIDEO/
+screenshots/
