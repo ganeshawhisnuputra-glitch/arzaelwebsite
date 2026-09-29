@@ -8,24 +8,45 @@ interface EntryContextType {
 
 const EntryContext = createContext<EntryContextType | undefined>(undefined);
 
+const SESSION_KEY = 'arzael_entered_session';
+
 export const EntryProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // In development mode, default to false so entry transition can be tested cleanly without manual cache clearing.
-  // In production, check stored preference.
+  // Session-scoped entry state:
+  // On a clean first visit (fresh browser session / new window), hasEntered is always false so snake intro renders.
+  // When completed or skipped in the active tab/session, hasEntered is true and persists across refreshes within that session.
   const [hasEntered, setHasEntered] = useState<boolean>(() => {
-    if (import.meta.env.DEV) {
-      return false;
+    try {
+      // Remove any legacy persistent localStorage key that would permanently bypass the intro
+      if (typeof localStorage !== 'undefined') {
+        localStorage.removeItem('arzael_entered_world');
+      }
+      if (typeof sessionStorage !== 'undefined') {
+        return sessionStorage.getItem(SESSION_KEY) === 'true';
+      }
+    } catch {
+      // Storage access restricted or disabled
     }
-    return localStorage.getItem('arzael_entered_world') === 'true';
+    return false;
   });
 
   const enterWorld = () => {
     setHasEntered(true);
-    localStorage.setItem('arzael_entered_world', 'true');
+    try {
+      if (typeof sessionStorage !== 'undefined') {
+        sessionStorage.setItem(SESSION_KEY, 'true');
+      }
+    } catch {
+      // Storage access restricted or disabled
+    }
   };
 
   const replayEntry = () => {
     setHasEntered(false);
-    localStorage.removeItem('arzael_entered_world');
+    try {
+      if (typeof sessionStorage !== 'undefined') {
+        sessionStorage.removeItem(SESSION_KEY);
+      }
+    } catch {}
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
