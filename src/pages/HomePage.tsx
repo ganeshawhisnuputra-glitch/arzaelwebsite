@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { DoppelgangerScene } from '../components/home/DoppelgangerScene';
 import { CaseFileOrganizer } from '../components/home/CaseFileOrganizer';
 import { OuroborosTransition } from '../components/common/OuroborosTransition';
+import { SpotifySavePrompt } from '../components/home/SpotifySavePrompt';
 import { useEntry } from '../context/EntryContext';
 import { useModal } from '../context/ModalContext';
 import { socialLinks } from '../data/socialLinks';
@@ -13,6 +14,7 @@ export const HomePage: React.FC = () => {
   const { openLetters } = useModal();
   const [showIntro, setShowIntro] = useState(!hasEntered);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [justCompletedIntro, setJustCompletedIntro] = useState(false);
 
   // When entry context changes externally (e.g. deep link), sync
   useEffect(() => {
@@ -22,6 +24,7 @@ export const HomePage: React.FC = () => {
   const handleIntroComplete = useCallback(() => {
     enterWorld();
     setShowIntro(false);
+    setJustCompletedIntro(true);
   }, [enterWorld]);
 
   // Snake intro gate
@@ -126,6 +129,9 @@ export const HomePage: React.FC = () => {
           <CaseFileOrganizer mode="mobile" />
         </div>
       </div>
+
+      {/* ─── Spotify Save Prompt (only after fresh intro completion) ─── */}
+      <SpotifySavePrompt show={justCompletedIntro} />
 
       {/* ─── Overlay Menu Drawer ─── */}
       {menuOpen && (
