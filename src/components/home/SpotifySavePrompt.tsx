@@ -4,7 +4,7 @@ const STORAGE_KEY = 'arzael-car-hit-save-prompt-v1';
 const SPOTIFY_URL = 'https://open.spotify.com/artist/5Z1BQaKqJf7FhvaEWC2vOR?si=XL0MEQ6vQcuZL-tPOXqYHA';
 
 interface SpotifySavePromptProps {
-  /** Only show after intro completes — parent controls this */
+  /** Only show after intro completes and visitor is on homepage */
   show: boolean;
 }
 
@@ -15,7 +15,7 @@ export const SpotifySavePrompt: React.FC<SpotifySavePromptProps> = ({ show }) =>
   useEffect(() => {
     if (!show) return;
     try {
-      if (localStorage.getItem(STORAGE_KEY) === 'dismissed') return;
+      if (localStorage.getItem(STORAGE_KEY)) return;
     } catch { /* storage unavailable */ }
     // Delay appearance 1.2s after homepage renders so hero video settles
     const timer = setTimeout(() => setVisible(true), 1200);
@@ -24,7 +24,7 @@ export const SpotifySavePrompt: React.FC<SpotifySavePromptProps> = ({ show }) =>
 
   const dismiss = useCallback(() => {
     setExiting(true);
-    try { localStorage.setItem(STORAGE_KEY, 'dismissed'); } catch {}
+    try { localStorage.setItem(STORAGE_KEY, 'true'); } catch {}
     setTimeout(() => setVisible(false), 350);
   }, []);
 
@@ -45,7 +45,7 @@ export const SpotifySavePrompt: React.FC<SpotifySavePromptProps> = ({ show }) =>
         ${exiting ? 'opacity-0 translate-y-2 scale-95' : 'opacity-100 translate-y-0 scale-100'}
       `}
     >
-      {/* Physical record slip / listening note */}
+      {/* Physical record slip / listening note in the SELF SABOTAGE world */}
       <div
         className="relative w-[260px] sm:w-[280px] overflow-hidden select-none"
         style={{
@@ -110,20 +110,19 @@ export const SpotifySavePrompt: React.FC<SpotifySavePromptProps> = ({ show }) =>
               <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424a.623.623 0 0 1-.858.208c-2.35-1.436-5.308-1.76-8.792-.963a.625.625 0 1 1-.277-1.219c3.81-.87 7.078-.497 9.719 1.116.31.189.41.59.208.858zm1.224-2.724a.782.782 0 0 1-1.077.257c-2.69-1.654-6.79-2.132-9.971-1.166a.782.782 0 1 1-.456-1.496c3.633-1.103 8.148-.568 11.247 1.328.373.228.492.716.257 1.077zm.105-2.836C14.692 8.92 8.397 8.71 4.75 9.818a.938.938 0 1 1-.544-1.794c4.19-1.272 11.143-1.031 15.118 1.33a.938.938 0 0 1-.41 1.762.92.92 0 0 1-.999-.252z"/>
             </svg>
             <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-[#F3EBD7] group-hover:text-white">
-              SAVE ON SPOTIFY
+              SAVE ON SPOTIFY ↗
             </span>
-            <span className="text-[10px] text-[#F3EBD7]/60 group-hover:text-white/70">↗</span>
           </a>
 
           {/* Helper text */}
-          <p className="text-center text-[9px] font-mono text-[#041D1E]/40 mt-1.5 tracking-wide">
+          <p className="text-center text-[9px] font-mono text-[#041D1E]/50 mt-1.5 tracking-wide">
             tap ♡ in Spotify to save it.
           </p>
 
           {/* Secondary dismiss */}
           <button
             onClick={dismiss}
-            className="block w-full text-center mt-2 py-1 text-[10px] font-mono text-[#041D1E]/45 hover:text-[#041D1E]/70 tracking-[0.15em] uppercase cursor-pointer transition-colors"
+            className="block w-full text-center mt-2 py-1 text-[10px] font-mono text-[#041D1E]/45 hover:text-[#041D1E]/75 tracking-[0.15em] uppercase cursor-pointer transition-colors"
           >
             NOT NOW
           </button>

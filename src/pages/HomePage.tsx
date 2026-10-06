@@ -14,7 +14,6 @@ export const HomePage: React.FC = () => {
   const { openLetters } = useModal();
   const [showIntro, setShowIntro] = useState(!hasEntered);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [justCompletedIntro, setJustCompletedIntro] = useState(false);
 
   // When entry context changes externally (e.g. deep link), sync
   useEffect(() => {
@@ -24,7 +23,6 @@ export const HomePage: React.FC = () => {
   const handleIntroComplete = useCallback(() => {
     enterWorld();
     setShowIntro(false);
-    setJustCompletedIntro(true);
   }, [enterWorld]);
 
   // Snake intro gate
@@ -130,8 +128,8 @@ export const HomePage: React.FC = () => {
         </div>
       </div>
 
-      {/* ─── Spotify Save Prompt (only after fresh intro completion) ─── */}
-      <SpotifySavePrompt show={justCompletedIntro} />
+      {/* ─── Spotify Save Prompt (shows on homepage if campaign key not set) ─── */}
+      <SpotifySavePrompt show={!showIntro} />
 
       {/* ─── Overlay Menu Drawer ─── */}
       {menuOpen && (
